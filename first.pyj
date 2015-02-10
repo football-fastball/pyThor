@@ -1,0 +1,41 @@
+import stdlib
+
+# id to to add its own unique id
+# puts at the beginning, though within the specified where(id or tag)
+def add( where, what, id=False ):
+	if id:                                               # can then swap 
+		$( where ).prepend( $( what ).attr( 'id', id) ); # with native JavaScript, asm.js type javascript, immutable data structures in algorithms, etc.
+	else:                                                # with no worries
+		$( where ).prepend( $( what ) ) ;
+
+#puts at end, though within the specified  where(id or tag)
+def add_append( where, what, id=False ):
+	if id:                                               # can then swap 
+		$( where ).append( $( what ).attr( 'id', id) );  # with native JavaScript, asm.js type javascript, immutable data structures in algorithms, etc.
+	else:                                                # with no worries
+		$( where ).append( $( what ) ) ;
+
+		
+def css ( id, prop, value ):                             # by id  (is the default, for simplicity)
+	$( '#'+id ).css( prop , value ); 		
+		
+def css_by_tag( el , prop, value ):
+	$( el ).css( prop, value );
+	
+	
+print ( ' hello world, and then some ')
+
+
+a = 'I was here'
+b = 'and there'
+
+for i in range(10):
+	print(a, b)          # print ( a + b )  # or use plus operator for string concatenation (basic python)
+
+	
+css_by_tag ('body', 'margin',  '0px' )		
+#add  ('body',   '<p>Test</p>', 'nice')
+#add_append('#nice', '<b>hey there</b>')
+#add  ('body',   '<pre>Some\n text\n under\n the\n canvas</pre>', 'textlayer1')
+add ('body',   '<canvas height="20" width="150"></canvas>', 'thrive')
+css ('thrive', 'border', '1px dotted black')

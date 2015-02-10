@@ -1,0 +1,34 @@
+
+html, body {
+   margin:0; padding:0; /* optional */
+   height:100%;
+}
+
+#container {
+   min-height:100%;
+   background:red;
+}
+
+#container {
+   height:100%; /* one simple CSS rule for IE 6 and IE 5.5 */
+}
+
+#top {
+   padding:50px;
+   background:grey;
+}
+
+#mid {
+   padding:10px;
+   padding-bottom:60px;   /* Height of the footer */
+   background:blue;
+   height: 100%; /* either fills entire remaining container, or a specific height (and the rest is container css) */
+}
+
+#end {
+   position:absolute;
+   bottom:0;
+   width:100%;
+   height:60px;     /* Height of the footer  */
+   background:yellow;
+}
