@@ -38,7 +38,6 @@ def reverse_tuple_list(t):
 	v=[]
 	l = len(t)
 	idx = l
-	print 'index is:' + str(idx)
 	for x in range(l):
 		v.append( ( t[idx-1][0] , t[idx-1][1] ) )
 		idx = idx - 1
@@ -47,8 +46,6 @@ def reverse_tuple_list(t):
 def make_quad_tuple_find_between_tags_reverse_order(s, opentag = '<%', closetag = '%>'):
 	
 	arr = makes_tuple_find(s, opentag)
-	
-	print_tuple(arr)
 	
 	arr2 = reverse_tuple_list(arr)
 
