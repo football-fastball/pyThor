@@ -9,7 +9,9 @@ This is intended to be included as text, and returned as a string
 
 """)
 
-def python_using_php_htmlentities(s):
+
+	
+def python_php_htmlentities(s):
 
 	salt = uuid.uuid4().hex
 	
@@ -30,6 +32,10 @@ def python_using_php_htmlentities(s):
 	
 	
 	var = var.replace('*QUOT-*-QUOT-*-QUOT*'+salt, '&quot;&quot;&quot;')
+	
+	var = var.replace( '&amp;lt;%' , '&lt;%' ).replace( '%&amp;gt;', '%&gt;' ) # due to quick tags must be in htmlentities form between quick tags print pyQuickTags(r""" """)
+
+	
 	return var
 
 	
@@ -49,17 +55,19 @@ def source_code():
 	
 	<p> </p>
 
-""")
+&lt;% %&gt;   and feature added 2015.02.17 to convert back (when double htmlentities to quick tags strings)	
+	
+""").htmlentities() 
 
+# now method instead of the function, bit easier
+# python_php_htmlentities( source_code() )
 
 def source_code_output():
 	return pyQuickTags(r"""
 	
-
 {**{source_code_htmlentities_form}**}
 	
-
-""").format( source_code_htmlentities_form = python_using_php_htmlentities( source_code() ) )
+""").format( source_code_htmlentities_form = python_php_htmlentities( source_code() ) ) # note: at this time not to double htmlentities process
 	
 def console_log_function():
 	return pyQuickTags(r"""

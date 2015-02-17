@@ -53,6 +53,11 @@ Also note:
 The RapydScript simple example provided displays its output 
 through the browser's console log, Firebug's console log, etc.
 
+2015-02-17
+The features of a htmlentities method to python quick tags <% %> have been added and now also 
+allows python quick tags <% %> in htmlentities form within quick tags (at the pyQuickTags object)
+(see example output).  
+
 2015-02-16
 The feature have been added to the PyThor project for web development to now allow the use of
 better wysiwyg python quick tags string to support format variable syntax of {**{  }**} when the

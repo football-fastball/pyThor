@@ -84,16 +84,29 @@ class pyQuickTags(str):
 	def format(self, *args, **kwargs):
 		#print 'hello out there'
 	
-		return self.str_fv.format(*args, **kwargs) # or init  str_fv()  at this point 
+		return pyQuickTags(self.str_fv.format(*args, **kwargs)) # or init  str_fv()  at this point 
 	
 
 		#return     str( s ).format(*args, **kwargs)  # commented out
 		#return super(pyQuickTags, self ).lower().format(*args, **kwargs)  # commented out
 		# note, can wrap the super(pyQuickTags, self ) in a function e.g., something(super(str_fv, self )).format(*args, **kwargs)
 		# or call an additional method as .lower does, etc.
+	
+	
+	def htmlentities(self):
+		salt = uuid.uuid4().hex
+		s = self.replace('&quot;&quot;&quot;', '*QUOT-*-QUOT-*-QUOT*'+salt);
+		code_init = r""" echo htmlentities('%s'); """  %  s.replace("'", "\\'")    # or using quick tags works too
+		var = php(code_init)
+		var = var.replace('*QUOT-*-QUOT-*-QUOT*'+salt, '&quot;&quot;&quot;')
+		var = var.replace( '&amp;lt;%' , '&lt;%' ).replace( '%&amp;gt;', '%&gt;' ) # perhaps salt quick tags too
 		
-	def to_print(self):
-		print self
+		#return var # this ok, perhaps to wrap return with pyQuickTags() to then allow another method call
+		
+		return pyQuickTags(var)
+	
+	#def to_print(self):  # one point of print out at this time, reduces complexity, simplier
+	#	print self
 		
 	def to_write(self, file):
 		with open(file, 'w') as fp:
@@ -364,13 +377,25 @@ PHP test: {**{php_test}**}
 
 <pre>
 
-{**{source_variable}**}
+<br><br><br><br>
+
+<b>Any Characters permissible within python quick tags &lt;% %&gt; (strings), neat</b>
+
+Though this to note:
+&lt;% %&gt; , allows quick tags between quick tags though must be in html entities form
+
 ''' triple single quotes allowed also '''
 """ triple double quotes now allowed within python quick tags, feature added 2015.02.08 """
 
+
+{**{source_variable}**}  This format variable (see your_page.py) is processed, it's converted to htmlentities
+feature added to pyQuickTags to htmlentities any python quick tags &lt;% %&gt; (string) (Note: only python quick tag &lt;% %&gt; strings MUST be converted, the rest optional for display purposes), feature added 2015.02.17
+(Note: To not .htmlentities the contents within the &lt;head&gt;&lt;/head&gt; section of html tags, javascript between python quick tags &lt;% %&gt; , etc. )
+
+quick way to html entities a string {**{example_htmlentities_string}**}
+
 While still compatible with being able to use python format variables,
 {**{ python quick tags format variable now as wysiwyg text when undefined in format method parameters, feature added 2015.02.16 }**}
-
 
 
 </pre>
@@ -388,9 +413,22 @@ While still compatible with being able to use python format variables,
 testing_output = this_is_a_test(),    # test of include file using quick tags python syntax
 
 
-source_variable = source_code_output()
+source_variable = source_code(),
 
-) # %%>    # UNCOMMENT POINT *B* (uncomment the FIRST comment hash tag for the remove unicode operation)                                           
+example_htmlentities_string = <%  <p><hello world note p tags output><p>  %>.htmlentities() # note, python quick tags stings have .htmlentities method
+
+)
+
+#.htmlentities()
+
+
+#.replace( '&amp;lt;%' , '&lt;%' ).replace( '%&amp;gt;', '%&gt;' )
+
+
+
+# 
+
+ # %%>    # UNCOMMENT POINT *B* (uncomment the FIRST comment hash tag for the remove unicode operation)                                           
 
 # html entities form of <% %> are to be used within python quick tags of <% %>     that     are       &lt;% %&gt;  at this time,  Note: this may be a concern, and htmlentities any string containing that will convert it to &amp;lt;% %&amp;gt;
 # Therefore a feature to be implemented is to address that automatically for convenience
