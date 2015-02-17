@@ -53,6 +53,13 @@ Also note:
 The RapydScript simple example provided displays its output 
 through the browser's console log, Firebug's console log, etc.
 
+2015-02-16
+The feature have been added to the PyThor project for web development to now allow the use of
+better wysiwyg python quick tags string to support format variable syntax of {**{  }**} when the
+format variable has not been defined within the format method argument,parameter list.
+Note the syntax of format variables within PyThor (and its portable version, PyTron) are different than Python
+due to the intention to allow improved wysiwyg strings to then allow the use of the curly brace { } as text first.
+
 2015-02-10
 The pyThor project has been created to be a programming language for web development.
 It is intended to extend Python's features specifically for web development.

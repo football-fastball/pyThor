@@ -10,11 +10,34 @@ same_file = False	# is True or False , gets value from PHP (global or make App c
                         # began to import from PHP, still a todo, at this time
 PRINTOUT = False	# for print statements used by print_test() to review variables, etc. for a form of browser console logging
 					# 2015.01.30 added feature to allow python quick tags to triple quoted strings for assignment operators
-					# triple quoted string can still be used, but not between print utags(training_wheels_bit_slower_to_remove(r""" and """)) because they represent triple double quotes, and that would be
+					# triple quoted string can still be used, but not between print pyQuickTags(r""" and """) because they represent triple double quotes, and that would be
 					# triple double quotes within triple double quotes (quotes within TDQ need to be escaped with the backslash)
 
-print_literal = False 
+print_literal = False
 
+def findtags(open, close, s):
+	t=[] #list,array,vector...
+	idx=0
+	item =''
+	while(idx != -1):
+	
+		idx = s.find(open, idx)
+		if idx == -1:
+			#print 'break point #1 (open tag)'
+			break;
+			
+		idx2 = s.find(close, idx+1)
+		if idx2 == -1:
+			#print 'break point #2 (close tag)'
+			break;
+			
+		item = s[idx+len(open):idx2]
+		t.append(item) # potential variable name
+		#print 'result(' + item + ')'
+		idx += 1
+		item ='' # reset item
+	return t
+	
                   # utags will return the string with unicode type python quick tags ON as its initial value, by default.
                   # for convenience, the utags is a string object that creates a version of the source code when JavaScript is off as a transition until browser native implementation
 class utags(str): # or unicode_show  ,  whichever is a more appropriate label
@@ -22,6 +45,55 @@ class utags(str): # or unicode_show  ,  whichever is a more appropriate label
 	def unicode_markup(self, bool=True):
 		return self if bool else self.replace('<unicode>', '').replace('</unicode>','')
 
+class Str_fv(str): # to allow text that appear as format variables
+                   # that are not defined in the parameter list of the format method
+
+	def format(self, *args, **kwargs):
+		self  = self.replace('{', '{{').replace( '}', '}}')
+		open  = '{{**{{'
+		close = '}}**}}'
+		var_names = findtags(open, close, self) # potential
+
+		for item in kwargs:
+			for it in var_names:	#lookup after this working...
+				if  item == it:
+					self = self.replace(	open+item+close ,  (open+item+close).replace(open, '{').replace(close, '}'  ) )
+					continue
+		#print self
+		#to_write('str_fv_txt.py', self) # error checking
+		
+		return     str( self ).format(*args, **kwargs)  # note:  .format method converts  {{ to {
+	
+	#nice
+	def to_write(self, file):
+		with open(file, 'w') as fp:
+			fp.write(self)
+
+			
+class pyQuickTags(str):
+	
+	str_fv = Str_fv()
+	
+	def __init__(self, v):        # optional
+		#v = v.replace('{', '{{').replace('}', '}}').replace('{{**{{', '{').replace('}}**}}', '}')
+		#self = v         
+		#print self
+		self.str_fv = Str_fv(v)
+	
+	
+	def format(self, *args, **kwargs):
+		#print 'hello out there'
+	
+		return self.str_fv.format(*args, **kwargs) # or init  str_fv()  at this point
+	
+		#return     str( s ).format(*args, **kwargs)  # commented out
+	
+	def to_print(self):
+		print self
+		
+	def to_write(self, file):
+		with open(file, 'w') as fp:
+			fp.write(self)
 		
 def rawstringify_outerquote(s):
     for format in ["r'{}'", 'r"{}"', "r'''{}'''", 'r"""{}"""']:
@@ -143,10 +215,10 @@ def print_wwwlog(s, literal = True):    # prints to brower's console log
 		s = s.encode('hex')              # though perhaps browser's would identify that, or not, otherwise comment tags could be put around the unicode tags just mentioned <-- --> and javscript would convert to the required unicode text characters
 		s = '<hex>'+s+'</hex>'           # if newlines actually needed, then there's use of html tags, e.g., <br> and so on... (perhaps even arbitrary tags for things like tabs <tabs> defined by css and so on...)
 		
-	code_init = utags(training_wheels_bit_slower_to_remove(r"""
+	code_init = pyQuickTags(r"""
 $name1 = '%s';
 logConsole('$name1 var', $name1, true);
-""")) % s
+""") % s
 	wwwout = code_init + "\n" + console_log_function()
 	print php(  wwwout  ) # to web
 					  					  
@@ -177,7 +249,7 @@ def top_content():
                                                       # due to a space needed before closing parenthesis 
                                                       # when using triple DOUBLE quotes (no restriction with triple SINGLE quotes by you, the programmer)
 	# at this time, one or no spaces between open parenthesis and open quick tag (no resriction on the close python quick tag as far as spaces around it)
-	print_wwwlog ( utags(training_wheels_bit_slower_to_remove(r""" example of new feature using quick tags between parenthesis """)) )
+	print_wwwlog ( pyQuickTags(r""" example of new feature using quick tags between parenthesis """) )
 	
 	return ' pyThor    @    www.pythor.us '
 	
@@ -195,11 +267,11 @@ hello world  (but html characters are not interpreted this way)
 '''    )  # TWO SMALL CASES TO ESCAPE WITH RAW STRING LITERALS, a backslash before a single quote or double quote 
           # (depending what are the outer quotes) and if the intent is to have a backslash at the end of a string, need two of them
 
-	return utags(training_wheels_bit_slower_to_remove(r"""
+	return pyQuickTags(r"""
 	
 This is a test, <br>it is actually within a triple double quoted string
 {**{testing}**}
-""")).format( testing = 'HELLO WORLD(testing)' )
+""").format( testing = 'HELLO WORLD(testing)' )
 	
 def end_content():
 	return 'footer'
@@ -210,7 +282,8 @@ def domain_name(s):
 		return 'us'
 	elif(s == 'WIDE'):
 		return 'com'
-		
+
+# no longer using due to pyQuickTags class,object replaces this function
 def training_wheels_bit_slower_to_remove(s): # recommend: to remove this function for production code and edit code as required
                                              # just chose an arbitrary tag to represent the python format variables, works nicely, for now
 	return s.replace('{', '{{').replace('}', '}}').replace('{{**{{', '{').replace('}}**}}', '}')
@@ -218,11 +291,11 @@ def training_wheels_bit_slower_to_remove(s): # recommend: to remove this functio
 # test example, don't forget to have php.exe and php5ts.dll in PATH
 width = 100
 height = 100
-code = utags(training_wheels_bit_slower_to_remove(r"""
+code = pyQuickTags(r"""
 
 echo ('   {**{php_width}**}, {**{php_height}**}  ');
 
-""")).format( php_width = str(width) , php_height = str(height) )
+""").format( php_width = str(width) , php_height = str(height) )
 
 # Note, any JavaScript or any other code that contains a curly brace 
 # must double the curly brace when using the python format function with the triple double-quoted string, 
@@ -238,7 +311,7 @@ def output(name):
 # (It allows syntax highlighting within the tags, and eases coding)
 # Note that the following opening tag, (less-than sign and percent sign) will be replaced by the simple_preprocessor.py
 # with this:  PRINT training_wheels_bit_slower_to_remove(""" (lowercase) NOTE: this exact comment line obviously does not run.
-	print utags(training_wheels_bit_slower_to_remove(r"""
+	print pyQuickTags(r"""
 
 <!DOCTYPE html>
 <html lang="en">
@@ -288,10 +361,17 @@ PHP test: {**{php_test}**}
 <pre>
 
 {**{source_variable}**}
+''' triple single quotes allowed also '''
+&quot;&quot;&quot; triple double quotes now allowed within python quick tags, feature added 2015.02.08 &quot;&quot;&quot;
+
+While still compatible with being able to use python format variables,
+{**{ python quick tags format variable now as wysiwyg text when undefined in format method parameters, feature added 2015.02.16 }**}
+
+
 
 </pre>
 
-""")).format (   #  %:)>    # UNCOMMENT POINT *A* (uncomment the FIRST comment hash tag for the remove unicode operation   # the arbitrary find string is exactly this 20 characters long, quick workaround to subtract a parenthesis keyword operator # happy face keyword to rid a frown ( removes a close parenthesis ) (an arbitrary keyword created to remove one text character)
+""").format (   #  %:)>    # UNCOMMENT POINT *A* (uncomment the FIRST comment hash tag for the remove unicode operation   # the arbitrary find string is exactly this 20 characters long, quick workaround to subtract a parenthesis keyword operator # happy face keyword to rid a frown ( removes a close parenthesis ) (an arbitrary keyword created to remove one text character)
 	# variables used
 	top_content = top_content(),
 	mid_content = mid_content(),
@@ -306,7 +386,10 @@ testing_output = this_is_a_test(),    # test of include file using quick tags py
 
 source_variable = source_code_output()
 
-) # %"""))    # UNCOMMENT POINT *B* (uncomment the FIRST comment hash tag for the remove unicode operation)                                           
+) # %""")    # UNCOMMENT POINT *B* (uncomment the FIRST comment hash tag for the remove unicode operation)                                           
+
+# html entities form of print pyQuickTags(r""" """) are to be used within python quick tags of print pyQuickTags(r""" """)     that     are       &lt;% %&gt;  at this time,  Note: this may be a concern, and htmlentities any string containing that will convert it to &amp;lt;% %&amp;gt;
+# Therefore a feature to be implemented is to address that automatically for convenience
 
 # statements marked by UNCOMMENT POINT *A* and *B* uncomment to remove unicode type quick python tags i.e., <unicode> </unicode>  though the contents in between the tags remain intact
 #.unicode_markup()	# this is the method to remove the unicode type python quick tags, and give it a False argument
@@ -321,7 +404,7 @@ source_variable = source_code_output()
 					
 	# testing writing print statement to the web browser 
 	# the intent is to create a python function to wrap the writing with print statements to the web browser's console
-	code_init = utags(training_wheels_bit_slower_to_remove(r"""
+	code_init = pyQuickTags(r"""
 $name = 'Stan Switaj';
  
 $fruits = array("banana", "apple", "strawberry", "pineaple");
@@ -335,7 +418,7 @@ $user->purpose = "To print log messages to the browser console messages to the b
 logConsole('$name var', $name, true);
 logConsole('An array of fruits', $fruits, true);
 logConsole('$user object', $user, true);
-"""))
+""")
 
 
 	# Written to print to the console log of a web browser

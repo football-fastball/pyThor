@@ -13,8 +13,31 @@ PRINTOUT = False	# for print statements used by print_test() to review variables
 					# triple quoted string can still be used, but not between <% and %> because they represent triple double quotes, and that would be
 					# triple double quotes within triple double quotes (quotes within TDQ need to be escaped with the backslash)
 
-print_literal = False 
+print_literal = False
 
+def findtags(open, close, s):
+	t=[] #list,array,vector...
+	idx=0
+	item =''
+	while(idx != -1):
+	
+		idx = s.find(open, idx)
+		if idx == -1:
+			#print 'break point #1 (open tag)'
+			break;
+			
+		idx2 = s.find(close, idx+1)
+		if idx2 == -1:
+			#print 'break point #2 (close tag)'
+			break;
+			
+		item = s[idx+len(open):idx2]
+		t.append(item) # potential variable name
+		#print 'result(' + item + ')'
+		idx += 1
+		item ='' # reset item
+	return t
+	
                   # utags will return the string with unicode type python quick tags ON as its initial value, by default.
                   # for convenience, the utags is a string object that creates a version of the source code when JavaScript is off as a transition until browser native implementation
 class utags(str): # or unicode_show  ,  whichever is a more appropriate label
@@ -22,6 +45,55 @@ class utags(str): # or unicode_show  ,  whichever is a more appropriate label
 	def unicode_markup(self, bool=True):
 		return self if bool else self.replace('<unicode>', '').replace('</unicode>','')
 
+class Str_fv(str): # to allow text that appear as format variables
+                   # that are not defined in the parameter list of the format method
+
+	def format(self, *args, **kwargs):
+		self  = self.replace('{', '{{').replace( '}', '}}')
+		open  = '{{**{{'
+		close = '}}**}}'
+		var_names = findtags(open, close, self) # potential
+
+		for item in kwargs:
+			for it in var_names:	#lookup after this working...
+				if  item == it:
+					self = self.replace(	open+item+close ,  (open+item+close).replace(open, '{').replace(close, '}'  ) )
+					continue
+		#print self
+		#to_write('str_fv_txt.py', self) # error checking
+		
+		return     str( self ).format(*args, **kwargs)  # note:  .format method converts  {{ to {
+	
+	#nice
+	def to_write(self, file):
+		with open(file, 'w') as fp:
+			fp.write(self)
+
+			
+class pyQuickTags(str):
+	
+	str_fv = Str_fv()
+	
+	def __init__(self, v):        # optional
+		#v = v.replace('{', '{{').replace('}', '}}').replace('{{**{{', '{').replace('}}**}}', '}')
+		#self = v         
+		#print self
+		self.str_fv = Str_fv(v)
+	
+	
+	def format(self, *args, **kwargs):
+		#print 'hello out there'
+	
+		return self.str_fv.format(*args, **kwargs) # or init  str_fv()  at this point
+	
+		#return     str( s ).format(*args, **kwargs)  # commented out
+	
+	def to_print(self):
+		print self
+		
+	def to_write(self, file):
+		with open(file, 'w') as fp:
+			fp.write(self)
 		
 def rawstringify_outerquote(s):
     for format in ["r'{}'", 'r"{}"', "r'''{}'''", 'r"""{}"""']:
@@ -210,7 +282,8 @@ def domain_name(s):
 		return 'us'
 	elif(s == 'WIDE'):
 		return 'com'
-		
+
+# no longer using due to pyQuickTags class,object replaces this function
 def training_wheels_bit_slower_to_remove(s): # recommend: to remove this function for production code and edit code as required
                                              # just chose an arbitrary tag to represent the python format variables, works nicely, for now
 	return s.replace('{', '{{').replace('}', '}}').replace('{{**{{', '{').replace('}}**}}', '}')
@@ -288,6 +361,13 @@ PHP test: {**{php_test}**}
 <pre>
 
 {**{source_variable}**}
+''' triple single quotes allowed also '''
+""" triple double quotes now allowed within python quick tags, feature added 2015.02.08 """
+
+While still compatible with being able to use python format variables,
+{**{ python quick tags format variable now as wysiwyg text when undefined in format method parameters, feature added 2015.02.16 }**}
+
+
 
 </pre>
 
@@ -307,6 +387,9 @@ testing_output = this_is_a_test(),    # test of include file using quick tags py
 source_variable = source_code_output()
 
 ) # %%>    # UNCOMMENT POINT *B* (uncomment the FIRST comment hash tag for the remove unicode operation)                                           
+
+# html entities form of <% %> are to be used within python quick tags of <% %>     that     are       &lt;% %&gt;  at this time,  Note: this may be a concern, and htmlentities any string containing that will convert it to &amp;lt;% %&amp;gt;
+# Therefore a feature to be implemented is to address that automatically for convenience
 
 # statements marked by UNCOMMENT POINT *A* and *B* uncomment to remove unicode type quick python tags i.e., <unicode> </unicode>  though the contents in between the tags remain intact
 #.unicode_markup()	# this is the method to remove the unicode type python quick tags, and give it a False argument
