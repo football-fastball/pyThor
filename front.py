@@ -84,17 +84,21 @@ class pyQuickTags(str):
 	def format(self, *args, **kwargs):
 		#print 'hello out there'
 	
-		return self.str_fv.format(*args, **kwargs) # or init  str_fv()  at this point
+		return self.str_fv.format(*args, **kwargs) # or init  str_fv()  at this point 
 	
+
 		#return     str( s ).format(*args, **kwargs)  # commented out
-	
+		#return super(pyQuickTags, self ).lower().format(*args, **kwargs)  # commented out
+		# note, can wrap the super(pyQuickTags, self ) in a function e.g., something(super(str_fv, self )).format(*args, **kwargs)
+		# or call an additional method as .lower does, etc.
+		
 	def to_print(self):
 		print self
 		
 	def to_write(self, file):
 		with open(file, 'w') as fp:
-			fp.write(self)
-		
+			fp.write(self)	
+			
 def rawstringify_outerquote(s):
     for format in ["r'{}'", 'r"{}"', "r'''{}'''", 'r"""{}"""']:
         rawstring = format.format(s)
