@@ -83,8 +83,7 @@ $compiled = 'front_compiled.py';
 if ( not( is_compiled($source, $compiled) ) ) {
 	echo '(PYTHON COMPILING)';
 	echo passthru(	'python simple_preprocessor.py -TW "'.$source.'" "'.$compiled.'" "'.$str_bool_uni_value.'" 2>&1  && '.
-				'python simple_preprocessor_auto_print_literal.py "'.$compiled.'" "'.str_bool($auto_print_wwwlog_literal).'"  2>&1  && '.
-				'python "'.$compiled .'" "' .domain_name_endswith().'"  2>&1 ');
+			'python "'.$compiled .'" "' .domain_name_endswith().'"  2>&1 ');
 }
 else {
 	//echo '(ALREADY COMPILED)';

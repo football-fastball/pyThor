@@ -53,6 +53,13 @@ Also note:
 The RapydScript simple example provided displays its output 
 through the browser's console log, Firebug's console log, etc.
 
+2015-02-18
+Added the feature of displaying source code from a file using the .htmlentities method.  
+Also removed source code of an auxiliary preprocessor dependency (described 2015-01-31) that was 
+a bit flimsy that was in a test phase to ensure reliability and that the feature affected by the code 
+removal has similar features that already exist automatically with using python quick tags <% %> and can simply code 
+the raw string literal, r""" """ as needed to your preference. 
+
 2015-02-17
 The features of a htmlentities method to python quick tags <% %> have been added and now also 
 allows python quick tags <% %> in htmlentities form within quick tags (at the pyQuickTags object)

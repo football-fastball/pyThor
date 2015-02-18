@@ -258,6 +258,46 @@ def php(code): # shell execute PHP from Python (that is being called from php5_m
 		pass
 	return o
 
+def source_code_from_file():
+	
+	source='' 
+	with open('any_source_code_file.py', 'r') as fp:   # or .cpp .php  etc.
+		source = fp.read()
+	
+	return <%
+	 
+	{**{source_to_make_html_entities}**}
+	
+%>.format( source_to_make_html_entities = source ).htmlentities()	
+	
+	
+	
+def source_code():   # note, this is just source code print to display, not the entire page of the function output prints to the web browser, screen
+	return <%
+<html>
+</head>
+<script type="text/javascript">
+	alert('hello world');
+	// when using jquery then the next line
+	//$(document).ready(function() {
+		//console.log( "ready!" );
+		//alert('hello world');
+	//});
+</script>
+
+</head>
+<body>
+<h1>hello world</h1>
+<br>
+page contents here
+and more of the website too
+<b>have a great day!</b>
+<br>
+</body>
+</html>
+	
+%>.htmlentities()	
+	
 def top_content():
     
 	print_wwwlog( '''I am at " the top " content''' ) # NOTE: better to use triple single quotes , best to put a space before and after a triple quoted string (though not necessary for triple SINGLE quotes)
