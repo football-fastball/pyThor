@@ -58,7 +58,10 @@ Added the feature of displaying source code from a file using the .htmlentities 
 Also removed source code of an auxiliary preprocessor dependency (described 2015-01-31) that was 
 a bit flimsy that was in a test phase to ensure reliability and that the feature affected by the code 
 removal has similar features that already exist automatically with using python quick tags <% %> and can simply code 
-the raw string literal, r""" """ as needed to your preference. 
+the raw string literal, r""" """ as needed to your preference.  Updated the example page output 
+by the .php file now displays how to display source code with pre tags with the exact same newlines as in 
+the source code .py file, and an example of html automatically wrapping text (as it usually does) 
+with pre tags and css style to wrap a block of text (without the use of several <br> tags), neat.  
 
 2015-02-17
 The features of a htmlentities method to python quick tags <% %> have been added and now also 

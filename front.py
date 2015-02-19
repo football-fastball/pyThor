@@ -415,28 +415,43 @@ PHP test: {**{php_test}**}
 
 <unicode>hello world</unicode>
 
-<pre>
 
-<br><br><br><br>
+<pre style="white-space: pre-wrap;"> (note that this wrap use of pre tags will wrap its text)
 
 <b>Any Characters permissible within python quick tags &lt;% %&gt; (strings), neat</b>
 
-Though this to note:
+Though this to note:<br>
 &lt;% %&gt; , allows quick tags between quick tags though must be in html entities form
 
+
 ''' triple single quotes allowed also '''
+
 """ triple double quotes now allowed within python quick tags, feature added 2015.02.08 """
 
+</pre>
 
-{**{source_variable}**}  This format variable (see your_page.py) is processed, it's converted to htmlentities
+<h1>Example Of Displaying Source Code</h1>
+<pre>{**{source_variable}**}</pre>    (Note that to display source code with the same newlines as in the source code, it should be wrapped in pre tags without the css style wrapping of text as in the examples before and after the display of this source code)
+
+
+<pre style="white-space: pre-wrap;">
+This format variable (see your_page.py) is processed, it's converted to htmlentities
 feature added to pyQuickTags to htmlentities any python quick tags &lt;% %&gt; (string) (Note: only python quick tag &lt;% %&gt; strings MUST be converted, the rest optional for display purposes), feature added 2015.02.17
-(Note: To not .htmlentities the contents within the &lt;head&gt;&lt;/head&gt; section of html tags, javascript between python quick tags &lt;% %&gt; , etc. )
+
+
+(Note: To not .htmlentities the contents of the page itself within the &lt;head&gt;&lt;/head&gt; section of html tags, javascript between python quick tags &lt;% %&gt; , etc. ) 
+
+(htmlentities can be used for many purposes, such as to display source code blocks of code)
 
 quick way to html entities a string {**{example_htmlentities_string}**}
 
 While still compatible with being able to use python format variables,
+
 {**{ python quick tags format variable now as wysiwyg text when undefined in format method parameters, feature added 2015.02.16 }**}
 
+
+{**{     var    }**}
+</pre>
 
 </pre>
 
