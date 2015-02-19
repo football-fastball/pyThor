@@ -2,7 +2,7 @@ pyThor
 =======================
 
 The purpose is to output web pages with the Python programming language.  
-It extends Python syntax by adding features not found in Python specifically 
+It extends Python syntax by adding to Python specifically 
 for creating web pages on the Internet to have it as an alternative to PHP development.
 
 On the server side python language syntax is used and extended to allow python quick tags.
@@ -16,13 +16,13 @@ in addition to a web page written in python, it's to output through a minimal am
 
 The project has since grown to innovate quick tags for python source code that use asp like tags
 of <% and %> to denote triple quoted strings, useful new format variable tags to allow curly braces
-within JavaScript without escaping them (i.e., two curly braces to represent one within python triple quoted stings),
+within JavaScript without escaping them (i.e., two curly braces to represent one within python triple quoted strings),
 it allows syntax highlighting by text editors of a programming language keywords within the source code 
 between these open and close tags,
 as well as the innovative feature of hexadecimal tags to send content to the web browser.
 Also added the feature of making all quick tag <% %> strings (that represent triple double quoted strings) 
 to be raw literal strings for the reason that the output intended to be displayed in a web browser, therefore
-less escaping of special characters, and the newline is of course the html (br tag with angle backets) on the web.
+less escaping of special characters, and the newline is of course the html (br tag with angle brackets) on the web.
 
 In addition to the <hex></hex> I created, another feature I have innovated is a 
 html like "unicode python quick tag" of <unicode></unicode> for improved structure to html markup.
@@ -61,7 +61,7 @@ removal has similar features that already exist automatically with using python 
 the raw string literal, r""" """ as needed to your preference.  Updated the example page output 
 by the .php file now displays how to display source code with pre tags with the exact same newlines as in 
 the source code .py file, and an example of html automatically wrapping text (as it usually does) 
-with pre tags and css style to wrap a block of text (without the use of several <br> tags), neat.  
+with pre tags and css style to wrap a block of text (without the use of several <br> (br) html tags), neat.  
 
 2015-02-17
 The features of a htmlentities method to python quick tags <% %> have been added and now also 
