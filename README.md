@@ -53,6 +53,13 @@ Also note:
 The RapydScript simple example provided displays its output 
 through the browser's console log, Firebug's console log, etc.
 
+2015-02-20
+Added feature of displaying source code file similar to view source code as found in web browsers as well as
+updated the .htmlentities method code that is much improved and reliable to use the .htmlentities method 
+for python quick tag <% %> (triple double quoted strings). Also note to wrap the output of the new feature from
+the function source_code_from_file() in pre tags to display source code from a file similar to the display of an example
+source code file within python quick tags <% %> as the function source_code() outputs.
+
 2015-02-18
 Added the feature of displaying source code from a file using the .htmlentities method.  
 Also removed source code of an auxiliary preprocessor dependency (described 2015-01-31) that was 

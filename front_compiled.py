@@ -95,33 +95,36 @@ class pyQuickTags(str):
 	
 	def htmlentities(self):
 		salt = uuid.uuid4().hex
-		s = self.replace('&quot;&quot;&quot;', '*QUOT-*-QUOT-*-QUOT*'+salt);
+		s = self.replace('&quot;&quot;&quot;', '*QUOT-*-QUOT-*-QUOT*'+salt)
+		s = s.replace("'",  '*apos-*'+salt) # remove this line
+		s = s.replace('\n', '*newline-*'+salt)
+		s = s.replace('\t', '*tab-*'+salt)
+		s = s.replace(r'\\', '*slash-*'+salt)
 		
-		# tabs on blank newlines issue : solved 2015-02-19
-		t = s.splitlines()
-		u =''
-		for line in t:
-			if line.rstrip() == '':
-				u += '\n'
-			else:
-				u = u + line + '\n'
-		u = '\n' + u.strip() + '\n'
-		
-		code_init = pyQuickTags(r""" echo htmlentities('%s'); """)  %  u.replace('\\','\\\\').replace("'", "\\'")    # or using quick tags works too    r"""  """  for a tiny speed up or perhaps when testing a new feature
+		code_init = r""" echo htmlentities('%s'); """ % s    # or put between python quick tags print pyQuickTags(r""" """) works too    r"""  """  for a tiny speed up or perhaps when testing a new feature
 		var = php(code_init)
-		var = var.replace('*QUOT-*-QUOT-*-QUOT*'+salt, '&quot;&quot;&quot;')
+
+		var = var.replace('*QUOT-*-QUOT-*-QUOT*'+salt, '&quot;&quot;&quot;')		
+		var = var.replace( '*apos-*'+salt,    "'")
+		var = var.replace( '*newline-*'+salt, '\n')          # r'\n'  to display in web brower
+		var = var.replace( '*tab-*'+salt,     '\t')          # r'\t'  to display in web brower
+		var = var.replace( '*slash-*'+salt,   r'\\')
+		
 		var = var.replace( '&amp;lt;%' , '&lt;%' ).replace( '%&amp;gt;', '%&gt;' ) # perhaps salt quick tags too
 		
 		#return var # this ok, perhaps to wrap return with pyQuickTags() to then allow another method call
 		
 		return pyQuickTags(var)
-	
-	#def to_print(self):  # one point of print out at this time, reduces complexity, simplier
-	#	print self
 		
-	def to_write(self, file):
+	def encodehex(self):
+		return pyQuickTags( str(self).encode('hex') )
+
+	def encode(self, how): # or  *args, **kwargs  
+		return pyQuickTags( str(self).encode(how) ) # i,e., 'hex'
+		
+	def to_file(self, file):
 		with open(file, 'w') as fp:
-			fp.write(self)	
+			fp.write(self)
 			
 def rawstringify_outerquote(s):
     for format in ["r'{}'", 'r"{}"', "r'''{}'''", 'r"""{}"""']:
@@ -271,16 +274,17 @@ def php(code): # shell execute PHP from Python (that is being called from php5_m
 
 def source_code_from_file():
 	
-	source='' 
-	with open(r'C:\www\source_code.git\progress\app.py', 'r') as fp:   # or .cpp .php  etc.
+	source=''   # note: can r' ' string a full path to enter a string as text as string literals due to special characters, i.e., the backslash https://docs.python.org/2/reference/lexical_analysis.html#string-literals
+	with open('any_source_code_file.py', 'r') as fp:   # or .cpp .php  etc.
 		source = fp.read()
+		source = source.replace('"""', '&quot;&quot;&quot;')            # note: added 02-20-2015
+		
+	return pyQuickTags(r"""	
 	
-	return pyQuickTags(r"""
-	 
-	{**{source_to_make_html_entities}**}
-	
-""").format( source_to_make_html_entities = source ).htmlentities()	
-	
+{**{source_to_make_html_entities}**}
+
+""").format( source_to_make_html_entities = source ).htmlentities()
+
 	
 	
 def source_code():   # note, this is just source code print to display, not the entire page of the function output prints to the web browser, screen
@@ -402,6 +406,7 @@ jQuery.getScript("first.js", function() {
 
 </head>
 <body>
+<a href="{**{filename}**}">click to view PyTron source</a><!-- similar to view source as feature of web browers --><br>
 <br>{**{testing_output}**}<br>
 <div id="container">
 
@@ -479,9 +484,11 @@ While still compatible with being able to use python format variables,
 testing_output = this_is_a_test(),    # test of include file using quick tags python syntax
 
 
-source_variable = source_code_from_file(),
+source_variable = source_code(),
 
-example_htmlentities_string = pyQuickTags(r"""  <p><hello world note p tags output><p>  """).htmlentities() # note, python quick tags stings have .htmlentities method
+example_htmlentities_string = pyQuickTags(r"""  <p><hello world note p tags output><p>  """).htmlentities(), # note, python quick tags stings have .htmlentities method
+
+filename = os.path.basename(__file__).replace('_compiled.py', '.py') # php filename witout extension
 
 )
 
