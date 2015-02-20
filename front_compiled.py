@@ -96,7 +96,18 @@ class pyQuickTags(str):
 	def htmlentities(self):
 		salt = uuid.uuid4().hex
 		s = self.replace('&quot;&quot;&quot;', '*QUOT-*-QUOT-*-QUOT*'+salt);
-		code_init = r""" echo htmlentities('%s'); """  %  s.replace("'", "\\'")    # or using quick tags works too
+		
+		# tabs on blank newlines issue : solved 2015-02-19
+		t = s.splitlines()
+		u =''
+		for line in t:
+			if line.rstrip() == '':
+				u += '\n'
+			else:
+				u = u + line + '\n'
+		u = '\n' + u.strip() + '\n'
+		
+		code_init = pyQuickTags(r""" echo htmlentities('%s'); """)  %  u.replace('\\','\\\\').replace("'", "\\'")    # or using quick tags works too    r"""  """  for a tiny speed up or perhaps when testing a new feature
 		var = php(code_init)
 		var = var.replace('*QUOT-*-QUOT-*-QUOT*'+salt, '&quot;&quot;&quot;')
 		var = var.replace( '&amp;lt;%' , '&lt;%' ).replace( '%&amp;gt;', '%&gt;' ) # perhaps salt quick tags too
@@ -261,7 +272,7 @@ def php(code): # shell execute PHP from Python (that is being called from php5_m
 def source_code_from_file():
 	
 	source='' 
-	with open('any_source_code_file.py', 'r') as fp:   # or .cpp .php  etc.
+	with open(r'C:\www\source_code.git\progress\app.py', 'r') as fp:   # or .cpp .php  etc.
 		source = fp.read()
 	
 	return pyQuickTags(r"""
@@ -468,7 +479,7 @@ While still compatible with being able to use python format variables,
 testing_output = this_is_a_test(),    # test of include file using quick tags python syntax
 
 
-source_variable = source_code(),
+source_variable = source_code_from_file(),
 
 example_htmlentities_string = pyQuickTags(r"""  <p><hello world note p tags output><p>  """).htmlentities() # note, python quick tags stings have .htmlentities method
 

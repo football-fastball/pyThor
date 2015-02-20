@@ -96,7 +96,18 @@ class pyQuickTags(str):
 	def htmlentities(self):
 		salt = uuid.uuid4().hex
 		s = self.replace('&quot;&quot;&quot;', '*QUOT-*-QUOT-*-QUOT*'+salt);
-		code_init = r""" echo htmlentities('%s'); """  %  s.replace("'", "\\'")    # or using quick tags works too
+		
+		# tabs on blank newlines issue : solved 2015-02-19
+		t = s.splitlines()
+		u =''
+		for line in t:
+			if line.rstrip() == '':
+				u += '\n'
+			else:
+				u = u + line + '\n'
+		u = '\n' + u.strip() + '\n'
+		
+		code_init = <% echo htmlentities('%s'); %>  %  u.replace('\\','\\\\').replace("'", "\\'")    # or using quick tags works too    r"""  """  for a tiny speed up or perhaps when testing a new feature
 		var = php(code_init)
 		var = var.replace('*QUOT-*-QUOT-*-QUOT*'+salt, '&quot;&quot;&quot;')
 		var = var.replace( '&amp;lt;%' , '&lt;%' ).replace( '%&amp;gt;', '%&gt;' ) # perhaps salt quick tags too
