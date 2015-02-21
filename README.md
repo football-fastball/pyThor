@@ -53,6 +53,9 @@ Also note:
 The RapydScript simple example provided displays its output 
 through the browser's console log, Firebug's console log, etc.
 
+2015-02-21
+Updated the .htmlentities method and tested .py and .cpp source code to display output source code to web browser.
+
 2015-02-20
 Added feature of displaying source code file similar to view source code as found in web browsers as well as
 updated the .htmlentities method code that is much improved and reliable to use the .htmlentities method 
