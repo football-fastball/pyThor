@@ -2,7 +2,6 @@
 def this_is_a_test():
 
 	return <%
-
 This is intended to be included as text, and returned as a string
 \\a\\1\\2\\3\\4\\5\\6\\7\\8\\9\\b\\f\\v\\r\\n\\t\\0\\x0B   testing3, expected
 <!-- escape characters within include files -->
@@ -108,7 +107,7 @@ def console_log_function():
           $data = $isevaled ? $data : ($data[0] === "'") ? $data : "'" . $data . "'";
  
 $js = <<<JSCODE
-\n<script>
+<script>
      // fallback - to deal with IE (or browsers that don't have console)
      if (! window.console) console = {};
      console.log = console.log || function(name, data){};
@@ -151,10 +150,4 @@ JSCODE;
  
           echo $js;
      } # end logConsole
-	 
-	 
-//echo( ' <br> {**{hello}**} <br>');	 
-
-//echo( '{**{howdy}**}');
-
-%>.format (  hello='hello world', howdy='very well thanks' )
+%>

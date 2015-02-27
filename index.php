@@ -46,7 +46,7 @@ if ( not( file_exists ($source) ) ) {
 	exit (1); 
 }
 
-compile( 'first' ); // or first.pyj
+compile_auto_python_rs( 'first' ); // or first.pyj		//    this compiles auto python rapydscript 
 
 /* Note: New Feature   --   Open and Close Tags for ONLY the  .py  file  ( not the RapydScript code file )
   
@@ -76,59 +76,124 @@ compile( 'first' ); // or first.pyj
 //         to being different files and the source is not modified         this feature added: 2015.01.26 and the entire project up to this day by Stan "Lee" Switaj and my email is: BehemothIncCEO@gmail.com
 //         ( Sidenote: Though if this code were adapted to create a   mod_quick_tags_python  Apache module, perhaps the simple_postprocessor.py would still be required)          (comments,suggestions welcome)
 
+function strToHex($string){ $hex = ''; for($i=0; $i < strlen($string); $i++){$hex .= sprintf( "%02x", ord($string[$i]));} return $hex; }
 	
+function micro(){return explode( '.' , microtime(True))[1];} // nano perhaps, etc.
+
+function dosprompt_limitworkaround($num){	return $num < 8000;	}            // (due to dos prompt workaround limit to send text over dos prompt (command line) console)
+
+function superget()    { return json_encode($_GET);    }
+function superpost()   { return json_encode($_POST);   }
+function superfiles()  { return json_encode($_FILES);  }
+function superglobals(){ return json_encode($_SERVER); }
+
+// before hex conversions
+$var_superget     = superget();
+$var_superpost    = superpost();
+$var_superfiles   = superfiles();
+$var_superglobals = superglobals();
+
+$supercount = ((strlen($var_superget)+strlen($var_superpost)+strlen($var_superfiles)+strlen($var_superglobals)) * 2) ;	// hex overhead (a side todo to get exact ratio)
+print 'Totals (hex length): (' + $supercount + ')';
+
+
+
+$filename_superglobals = 'pyThor_superglobalvariables'.micro().'.txt';    // perhaps a virtual in-memory file solution 
+if ( dosprompt_limitworkaround($supercount) ) {                                    //  (due to dos prompt workaround limit to send text over dos prompt (command line) console)
+	$var_superget     = strToHex($var_superget);
+	$var_superpost    = strToHex($var_superpost);
+	$var_superfiles   = strToHex($var_superfiles);
+	$var_superglobals = strToHex($var_superglobals);	
+}
+else {	
+	file_put_contents(  $filename_superglobals, $var_superglobals . "\n" . $var_superget . "\n" . $var_superpost  . "\n" .  $var_superfiles );
+	$var_superglobals = 'file';
+	$var_superget     = $filename_superglobals;
+	
+	$var_superpost='';
+	$var_superfiles='';
+}
+
+
+
 $source = 'front.py';
 $compiled = 'front_compiled.py';
 
-if ( not( is_compiled($source, $compiled) ) ) {
-	echo '(PYTHON COMPILING)';
-	echo passthru(	'python simple_preprocessor.py -TW "'.$source.'" "'.$compiled.'" "'.$str_bool_uni_value.'" 2>&1  && '.
-			'python "'.$compiled .'" "' .domain_name_endswith().'"  2>&1 ');
+//comment out!! or remove this code, developer convenience code, internal features developer code
+$bool_recompile_feature_edit = false;
+$features_file = 'simple_preprocessor_pyThor_features_txt.py';
+
+$bool_recompile_feature_edit = to_compile($features_file, $compiled);  // AND REMOVE THE  ||  boolean on the next statement
+// NOTE: when developing internal features, note the next statement to uncomment, the next if statment ( approx. 7 lines down, it is a if statement with the boolean or ) (it is commented out) (it is so compiling will occur when the simple_preprocessor_pyThor_features_txt.py file is edited)
+//comment out!! or remove this code, developer convenience code, internal features developer code
+//
+//
+//
+// NOTE: simple_preprocessor_pyThor_features_txt.py MUST be in the same folder as simple_preprocessor.py
+// NOTE: TW is now pyQuickTags a feature built-in,intrinsic (internal now as a feature)
+//    past tense
+if (  to_compile($source, $compiled)  ||  $bool_recompile_feature_edit ) {  // NOTE: this is for an internal developer statment to recompile when simple_preprocessor_pyThor_features_txt.py is edited (therefore comment out the next line as needed)
+//if (  to_compile($source, $compiled) ) {       
+	echo passthru(	'python simple_preprocessor.py -M "'.$source.'" "'.$compiled.'" "'.$str_bool_uni_value.'" 2>&1' );
 }
 else {
-	//echo '(ALREADY COMPILED)';
-	echo passthru('python "'.$compiled. '" "' .domain_name_endswith().'"  2>&1 ');
+	echo '( NOT compiling!!!)';
 }
 
+
+
+echo passthru('python "'.$compiled. '" "' .domain_name_endswith().'" "'. $var_superglobals . '" "' . $var_superget . '" "' . $var_superpost  . '" "' . $var_superfiles . '"  2>&1 ');
+
+
+
+
+
+if ( ! dosprompt_limitworkaround($supercount) ) {		// note: negation
+	if ( file_exists($filename_superglobals) )
+		unlink ( $filename_superglobals );
+}
 
 function mod_dt($file) {
 	return date ("YmdHis", filemtime($file));
 }
 
-function is_compiled($source, $compiled) {
+function to_compile($source, $compiled) {
 	
-	if ( not( file_exists ($source) ) ) {
+	if (  file_exists ($source) == false ) {
 		echo "$source file does not exist, exiting";
-		return false;
+		exit;	// if you delete the  source.py (front.py) file, but keep the _compiled.py file for perhaps a (strange) reason,    return false;   instead of  exit;
 	}
 	
-	if ( not( file_exists ($compiled) ) ) {
+	if ( file_exists ($compiled) == false ) {
 		echo "$compiled file does not exist" . '<br>';
-		return false;
+		print 'COMPILING NOW!' . '<br>';
+		return true;
 	}
 	
-	if ( mod_dt($source) >= mod_dt($compiled) )
-		return false;
-	else
+	if ( mod_dt($source) > mod_dt($compiled) ) {
+		print 'COMPILING NOW! source has been edited ' . $source . '<br>';
 		return true;
+	}
+	else
+		return false;
 }
 
 
-function compile($source, $compiled = 'default_same_name_as_source') {
+function compile_auto_python_rs($source, $compiled = 'default_same_name_as_source') {
 
-	if ( not( contains('.pyj' , lower($source) ) ) )
+	if (  contains('.pyj' , lower($source) ) == false  )
 		$source = $source . '.pyj';
 
 	if ( $compiled == 'default_same_name_as_source' )
 		$compiled = without_file_extension($source) . '.js';
-	else if ( not( contains('.js' , lower($compiled) ) ) )
+	else if (  contains('.js' , lower($compiled) ) == false )
 		$compiled = $compiled . '.js';
 	
-	if ( is_compiled ($source, $compiled) ) {
+	if ( to_compile ($source, $compiled) == false ) {	// when its false, therefore already compiled
 		//echo 'compiled, yes, already done.';
 		return;
 	}
-	
+
 	if ( file_exists($compiled) )
 		unlink ( $compiled );
 

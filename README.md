@@ -53,6 +53,16 @@ Also note:
 The RapydScript simple example provided displays its output 
 through the browser's console log, Firebug's console log, etc.
 
+2015-02-27
+Added several new features including environment variables from php that are pySERVER, pyGET, pyPOST, and pyFILES that can be
+accessed similarly to how global variables are in PHP or from featured convienence variables for each item.  In addition,
+there is now source code view (most programmer website code), full source code view (including PyThor internal functionality code), 
+and finally a pyThor_info type function named  display_pythorinfo() to show the environment variables something similar to PHP's phpinfo().
+And also made the source code most programmers will edit distinct from the internal workings of PyThor's features source code as way to
+show only the source code most users will be dealing with specific to their website.  These display source code features of PyThor 
+are a way to display source code in the familiar way that web browsers for years have had the feature of view page source. Enjoy!
+
+
 2015-02-21
 Updated the .htmlentities method and tested .py and .cpp source code to display output source code to web browser.
 
