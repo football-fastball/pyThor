@@ -848,7 +848,7 @@ def get_fullsource(comments = True, pretags=False): # True initially
 	
 	salt = uuid.uuid4().hex
 	
-	print '<br>'+ 'GET_FULLSOURCE' + '<br>'
+	#print '<br>'+ 'GET_FULLSOURCE' + '<br>'
 	
 	source = __file__ # compiled version _compiled.py  (note: not the current file, e.g.,  *_pyThor_features_txt.py )
 	
@@ -884,6 +884,17 @@ def get_fullsource(comments = True, pretags=False): # True initially
 	
 	return replace_when_yes( pyQuickTags(out).htmlentities(), salted_opentag='*openpre-*'+salt, salted_closetag='*closepre-*'+salt, bool_when=pretags, salt_flavor = salt )
 
+
+def display_features():
+
+	features_file = 'simple_preprocessor_pyThor_features_txt.py'	# test if feature file exists (should)
+
+	opentag   = '# FEATURES LIST OPEN TAG #'.replace(' ','_')
+	closetag  = '# FEATURES LIST CLOSE TAG #'.replace(' ','_')
+	features  = get_string_tag_to_tag_read_source( features_file, opentag, closetag )
+
+	return pyQuickTags(features).htmlentities()
+	
 	
 def print_args(s, intro=''):
 	print( intro )
@@ -902,8 +913,8 @@ def print_args(s, intro=''):
 
 if __name__ == "__main__":  # in the case not transferring data from php, then simply revert to a previous version, commit
 	
-	print 'pyThor (pyThon,server side)'
-	print_args(sys.argv, '<br>HERE front.py '+'<br>')
+	print 'pyThor (pyThor,server-side) (rapydscript, python client-side javascript)'
+	#print_args(sys.argv, '<br>HERE front.py '+'<br>')		# to view the arguments that are sent to PyThor (from PHP)
 		
 	create_superglobals(sys.argv)
 	
@@ -924,8 +935,6 @@ if __name__ == "__main__":  # in the case not transferring data from php, then s
 
 # DO NOT EDIT THE TEXT ON THE NEXT LINE, this is used to automatically generate _compiled.py source code #
 #_FEATURES_LIST_OPEN_TAG_#
-
-
 Features List of PyThor
 
 1. python quick tags <% %> (This is a triple double quoted string - TDQ )

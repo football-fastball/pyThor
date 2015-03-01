@@ -53,6 +53,11 @@ Also note:
 The RapydScript simple example provided displays its output 
 through the browser's console log, Firebug's console log, etc.
 
+2015-03-01
+Added optional url GET parameters for index.php?fullsource , index.php?features , and index.php?pythorinfo to display
+the features, environment variables, and source code as web browsers display the view source code as feature to PyThor.
+This in addition to displaying the PyThor source code specific to your website (without the internal source code of PyThor displaying). 
+
 2015-02-27
 Added several new features including environment variables from php that are pySERVER, pyGET, pyPOST, and pyFILES that can be
 accessed similarly to how global variables are in PHP or from featured convienence variables for each item.  In addition,

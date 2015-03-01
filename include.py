@@ -144,7 +144,7 @@ $js = <<<JSCODE
      console.log('------------------------------------------');
      console.log('$type');
      console.log(hex2asc($data));
-     console.log('\\\\n');
+     //console.log('\\\\n');
 </script>
 JSCODE;
  

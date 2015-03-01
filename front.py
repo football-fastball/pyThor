@@ -23,9 +23,12 @@ import sys
 
 #  List Of PyThor features
 #  -----------------------
-#       from the .php file     *.php?features         to access the feature list
-#       be note to enable the features display from your .php file  at the variable   feature_list = True;  by default this is off
-
+#       From the .php file     *.php?fullsource       to display the full source code of a webpage similar to the view source as feature of web browsers 
+#                              *.php?pythorinfo       to display the environment variables of the web server, e.g., pySERVER, pyGET, pyPOST, and pyFILES
+#                              *.php?features         to access the feature list
+#                                   
+#
+#       Note that each of these url get parameters are easily configured that can be removed as shown in the example source code page auto created initially (note the .format method of the main function output )
 
 
 
@@ -80,7 +83,7 @@ def top_content():
 	
 def mid_content():
 
-	print_wwwlog( r'''I am " at """" \'\'\'\'\'\'\'{}{}{}{} {{{{ }}}} the middle content \a\1\2\3\4\5\6\7\8\9\b\f\v\r\n\t\0\x0B
+	print_wwwlog( <% I am  at  '''''''{}{}{}{} {{{{ }}}} the middle content \a\1\2\3\4\5\6\7\8\9\b\f\v\r\n\t\0\x0B
 	
 	
 I have denoted newlines within a raw string , sent to the web browser that also interprets as newlines
@@ -89,14 +92,14 @@ And saving the file also is fine.
 <br>
 <br>
 hello world  (but html characters are not interpreted this way)
-'''    )  # TWO SMALL CASES TO ESCAPE WITH RAW STRING LITERALS, a backslash before a single quote or double quote 
+%>    )  # TWO SMALL CASES TO ESCAPE WITH RAW STRING LITERALS, a backslash before a single quote or double quote 
           # (depending what are the outer quotes) and if the intent is to have a backslash at the end of a string, need two of them
 
 	return <%
 	 
-This is a test, <br>it is actually within a triple double quoted string
-{**{testing}**}
-%>.format( testing = 'HELLO WORLD(testing)' )
+{**{var_msg}**}
+
+%>.format( var_msg = 'HELLO WORLD - PyThor for Web Programming' )
 	 
 def end_content():
 	return 'footer'
@@ -154,15 +157,15 @@ jQuery.getScript("first.js", function() {
 </script>
 
 </head>
-<body>
-<a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers --> <pre style="display:inline">  </pre> <pre>{**{fullsource}**}</pre> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
+<body><br>
+<a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers -->  <pre style="display:inline">{**{fullsource}**}</pre> <br> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
 <a href="index.php?pythorinfo">pyThorInfo</a> {**{pyThorinfo}**}  <!-- Display pyThor environment by a url get (variable) --> <!-- perhaps put this on different page -->
 <br>{**{testing_output}**}<br>
 <div id="container">
 
 <div id="top">{**{top_content}**}</div>
 
-<div id="mid">{**{mid_content}**}</div>
+<div id="mid">{**{mid_content}**}  <br>  <pre>{**{features}**}</pre>   </div>
 
 <div id="end">{**{end_content}**}</div>
 
@@ -249,10 +252,10 @@ fullsource = get_fullsource(comments = True, pretags=True) if (QUERY_STRING == '
 fullsourcelink = './index.php?fullsource',
 
 
-
-
 # for demonstration purpose only, please remove the next line for production code (it is however a feature that is available at any time should you code it)
-pyThorinfo = display_pythorinfo()  if (QUERY_STRING == 'pythorinfo') else ''   #remove this line to remove the url feature
+pyThorinfo = display_pythorinfo()  if (QUERY_STRING == 'pythorinfo') else '',   #remove this line to remove the url feature
+
+features = display_features() if (QUERY_STRING == 'features') else ''
 
 )
 

@@ -94,7 +94,7 @@ $var_superfiles   = superfiles();
 $var_superglobals = superglobals();
 
 $supercount = ((strlen($var_superget)+strlen($var_superpost)+strlen($var_superfiles)+strlen($var_superglobals)) * 2) ;	// hex overhead (a side todo to get exact ratio)
-print 'Totals (hex length): (' + $supercount + ')';
+//print 'Totals (hex length): (' + $supercount + ')';
 
 
 
