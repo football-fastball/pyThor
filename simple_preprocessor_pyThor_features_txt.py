@@ -174,7 +174,7 @@ class pyQuickTags(str):
 			msg = '<br>Full Source Code Display Done. <br>NOTE: early exit from a truncate of an end of full source substring<br><br>'
 		
 
-		return pyQuickTags(self[startpos+len(startfullsource_substring):endpos])   +  msg 
+		return pyQuickTags(self[startpos+len(startfullsource_substring):endpos]   +  msg  )  # update: fix 03-03-2015  parenthesis required outside the string, otherwise htmlentities and additional pyQuickTag methods are not available due to a conversion to a str string from a pyQuickTags string
 																			   #.to_file('justtosee.txt')  # I append this to the pyQuickTags at that point, (one line up) to then view what the data is at that point
 	
 	
@@ -338,7 +338,7 @@ def source_code_from_file(file):
 	
 {**{source_variable}**}
 
-%>.format( source_variable = source_code() )	
+%>.format( source_variable = source ).htmlentities()   # when htmlentities not needed, then either remove the .htmlentities method, different function name with different code, (perhaps an override local function (w/same name) in website source, (though this override technique could cause confusion) ), or a htmlentities with a boolean arg,parameter version, etc.
 
 
 
