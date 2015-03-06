@@ -1,7 +1,7 @@
 import os
 import sys
 
-
+  
 # Internal are these functions that you can use, the source code to view is in the file  simple_preprocessor_pyThor_features_txt.py
 #                                                   the compiled version is in the file  front_compiled.py
 #                                                   for review
@@ -128,6 +128,7 @@ echo ('   {**{php_width}**}, {**{php_height}**}  ');
 # with the use of jQuery's .ready and .getScript that also verifies the JavaScript is syntactically correct.
 # If it is correct to the browser's JavaScript engine, the console.log will successfully print to the browser's console.
 
+global direct_global_var
 
 def output(name):
 # With this New Feature: Open and Close Tags for this python file 
@@ -135,6 +136,9 @@ def output(name):
 # Note that the following opening tag, (less-than sign and percent sign) will be replaced by the simple_preprocessor.
 # with this:  PRINT training_wheels_bit_slower_to_remove(""" (lowercase) NOTE: this exact comment line obviously does not run.
 	
+	direct_global_var = 'planet earth, (mercury, venus) mars, etc'
+	direct_local_var = 'hello world'
+	local_var2 = 'hows it going'
 	<%
 
 <!DOCTYPE html>
@@ -157,7 +161,7 @@ jQuery.getScript("first.js", function() {
 </script>
 
 </head>
-<body><br>
+<body><br> {**{direct_local_var}**}  {**{local_var2}**}  {**{direct_global_var}**}
 <a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers -->  <pre style="display:inline">{**{fullsource}**}</pre> <br> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
 <a href="index.php?pythorinfo">pyThorInfo</a> {**{pyThorinfo}**}  <!-- Display pyThor environment by a url get (variable) --> <!-- perhaps put this on different page -->
 <br>{**{testing_output}**}<br>
@@ -232,7 +236,7 @@ While still compatible with being able to use python format variables,
 	php_test    = php(code),  # just testing, remove if coding anything serious
 	
 	domain      = domain_name(name), # or something like whether a mobile device,
-                                     # resolution information, etc. to select which css that fits	
+                                    # resolution information, etc. to select which css that fits	
 
 testing_output = '', #this_is_a_test(),    # test of include file using quick tags python syntax
 

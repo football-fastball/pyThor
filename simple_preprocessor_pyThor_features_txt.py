@@ -86,7 +86,29 @@ def findtags(open, close, s):
 		idx += 1
 		item ='' # reset item
 	return t
-	
+
+def make_tuples(s):		# for direct format variables using python quick tags {**{  }**}
+
+	fv = []
+
+	start = 0
+	pos   = 0  # or idx
+
+	while (1):
+
+		pos = s.find( '{**{', pos )
+
+		if (pos == -1):
+			break
+		else:
+			pos += 4
+			start = pos
+			pos = s.find( '}**}', pos )
+			fv.append( s[start:pos]  )  # (start, pos)
+			pos += 4
+			
+	return fv		
+
                   # utags will return the string with unicode type python quick tags ON as its initial value, by default.
                   # for convenience, the utags is a string object that creates a version of the source code when JavaScript is off as a transition until browser native implementation
 class utags(str): # or unicode_show  ,  whichever is a more appropriate label
@@ -177,7 +199,25 @@ class pyQuickTags(str):
 		return pyQuickTags(self[startpos+len(startfullsource_substring):endpos]   +  msg  )  # update: fix 03-03-2015  parenthesis required outside the string, otherwise htmlentities and additional pyQuickTag methods are not available due to a conversion to a str string from a pyQuickTags string
 																			   #.to_file('justtosee.txt')  # I append this to the pyQuickTags at that point, (one line up) to then view what the data is at that point
 	
-	
+	def initsupers(self, *args):
+		
+		format_vars = make_tuples(self)
+
+		for item in format_vars:
+
+			data = args[0].get(item)  # locals
+			if type(data) is str:
+				if data:
+					self = self.replace( '{**{'+item+'}**}' , data )
+
+			data = args[1].get(item)  # globals
+			if type(data) is str:
+				if data:
+					self = self.replace( '{**{'+item+'}**}' , data )
+
+		return pyQuickTags(self)
+		
+		
 	def htmlentities(self):
 	
 		salt = uuid.uuid4().hex

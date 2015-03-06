@@ -53,6 +53,11 @@ Also note:
 The RapydScript simple example provided displays its output 
 through the browser's console log, Firebug's console log, etc.
 
+2015-03-05 
+Added this new innovative feature that is direct format variables that replace a variable for text without the required use of a .format method.
+Though note that any global variables and local variables and within the python quick tags <% %> (that are raw literal triple double quoted strings) and using format 
+variable syntax of {**{local_or_global_variable_name}**} that you should consider whenever text can be replaced with this new feature.  You may also use the .format method in addition to this feature as before.
+
 2015-03-01
 Added optional url GET parameters for index.php?fullsource , index.php?features , and index.php?pythorinfo to display
 the features, environment variables, and source code as web browsers display the view source code as feature to PyThor.

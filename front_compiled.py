@@ -81,7 +81,29 @@ def findtags(open, close, s):
 		idx += 1
 		item ='' # reset item
 	return t
-	
+
+def make_tuples(s):		# for direct format variables using python quick tags {**{  }**}
+
+	fv = []
+
+	start = 0
+	pos   = 0  # or idx
+
+	while (1):
+
+		pos = s.find( '{**{', pos )
+
+		if (pos == -1):
+			break
+		else:
+			pos += 4
+			start = pos
+			pos = s.find( '}**}', pos )
+			fv.append( s[start:pos]  )  # (start, pos)
+			pos += 4
+			
+	return fv		
+
                   # utags will return the string with unicode type python quick tags ON as its initial value, by default.
                   # for convenience, the utags is a string object that creates a version of the source code when JavaScript is off as a transition until browser native implementation
 class utags(str): # or unicode_show  ,  whichever is a more appropriate label
@@ -169,10 +191,28 @@ class pyQuickTags(str):
 			msg = '<br>Full Source Code Display Done. <br>NOTE: early exit from a truncate of an end of full source substring<br><br>'
 		
 
-		return pyQuickTags(self[startpos+len(startfullsource_substring):endpos])   +  msg 
+		return pyQuickTags(self[startpos+len(startfullsource_substring):endpos]   +  msg  )  # update: fix 03-03-2015  parenthesis required outside the string, otherwise htmlentities and additional pyQuickTag methods are not available due to a conversion to a str string from a pyQuickTags string
 																			   #.to_file('justtosee.txt')  # I append this to the pyQuickTags at that point, (one line up) to then view what the data is at that point
 	
-	
+	def initsupers(self, *args):
+		
+		format_vars = make_tuples(self)
+
+		for item in format_vars:
+
+			data = args[0].get(item)  # locals
+			if type(data) is str:
+				if data:
+					self = self.replace( '{**{'+item+'}**}' , data )
+
+			data = args[1].get(item)  # globals
+			if type(data) is str:
+				if data:
+					self = self.replace( '{**{'+item+'}**}' , data )
+
+		return pyQuickTags(self)
+		
+		
 	def htmlentities(self):
 	
 		salt = uuid.uuid4().hex
@@ -180,7 +220,7 @@ class pyQuickTags(str):
 		s = s.replace("'",  '*apos-*'+salt)
 		s = s.replace(r'\\', '*slash-*'+salt)
 		
-		code_init = pyQuickTags(r""" echo htmlentities('%s'); """)  %  s   # or r"""   """
+		code_init = pyQuickTags(r""" echo htmlentities('%s'); """).initsupers(locals(),globals())  %  s   # or r"""   """
 		var = php(code_init)
 
 		var = var.replace('*QUOT-*-QUOT-*-QUOT*'+salt, '&quot;&quot;&quot;')		
@@ -307,7 +347,7 @@ def print_wwwlog(s, literal = True):    # prints to brower's console log
 	code_init = pyQuickTags(r"""
 $name1 = '%s';
 logConsole('$name1 var', $name1, true);
-""") % s
+""").initsupers(locals(),globals()) % s
 	wwwout = code_init + "\n" + console_log_function()
 	print php(  wwwout  ) # to web
 
@@ -333,7 +373,7 @@ def source_code_from_file(file):
 	
 {**{source_variable}**}
 
-""").format( source_variable = source_code() )	
+""").initsupers(locals(),globals()).format( source_variable = source ).htmlentities()   # when htmlentities not needed, then either remove the .htmlentities method, different function name with different code, (perhaps an override local function (w/same name) in website source, (though this override technique could cause confusion) ), or a htmlentities with a boolean arg,parameter version, etc.
 
 
 
@@ -731,56 +771,56 @@ def display_pythorinfo(): # pyThor_info()    display_superglobals()
 	<h1>Apache Envionment Variables </h1>
 	
 	<table border="1">
-	""")	
+	""").initsupers(locals(),globals())	
 	
 	for item in apache_vars:
 		out += pyQuickTags(r"""
 		
 			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
 	
-	""").format( name = item , value = pySERVER[item] )                                 
+	""").initsupers(locals(),globals()).format( name = item , value = pySERVER[item] )                                 
 	
-	out += pyQuickTags(r"""	</table>	""")
+	out += pyQuickTags(r"""	</table>	""").initsupers(locals(),globals())
 	
 	
 	out += pyQuickTags(r""" 
 		<h1>Printing the pySERVER superglobal variables</h1>
 		<table border="1">
-	""")
+	""").initsupers(locals(),globals())
 	
 	for var_name, item in pySERVER.items():
 		out += pyQuickTags(r"""
 		
 			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
 	
-	""").format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
+	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
 	
 	out += pyQuickTags(r"""
 		</table>
-	""")
+	""").initsupers(locals(),globals())
 	
 	
 	
 	out += pyQuickTags(r""" 
 		<h1>Printing the pyGET superglobal variable contents</h1>
 		<table border="1">
-	""")
+	""").initsupers(locals(),globals())
 	
 	for var_name, item in pyGET.items():
 		out += pyQuickTags(r"""
 		
 			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
 	
-	""").format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
+	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
 	
-	out += pyQuickTags(r"""	</table>	""")
+	out += pyQuickTags(r"""	</table>	""").initsupers(locals(),globals())
 	
 	
 
 	out += pyQuickTags(r""" 
 		<h1>Printing the pyPOST superglobal variable contents</h1>
 		<table border="1">
-	""")
+	""").initsupers(locals(),globals())
 
 	
 	for var_name, item in pyPOST.items():
@@ -788,24 +828,24 @@ def display_pythorinfo(): # pyThor_info()    display_superglobals()
 		
 			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
 	
-	""").format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
+	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
 	
-	out += pyQuickTags(r"""	</table>	""")
+	out += pyQuickTags(r"""	</table>	""").initsupers(locals(),globals())
 	
 	
 	out += pyQuickTags(r""" 
 	<h1>Printing the pyFILES superglobal variable contents</h1>
 	<table border="1">
-	""")
+	""").initsupers(locals(),globals())
 	
 	for var_name, item in pyFILES.items():
 		out += pyQuickTags(r"""
 		
 			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
 	
-	""").format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
+	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
 	
-	out += pyQuickTags(r"""	</table>	""")
+	out += pyQuickTags(r"""	</table>	""").initsupers(locals(),globals())
 
 	
 	
@@ -900,12 +940,12 @@ def print_args(s, intro=''):
 import os
 import sys
 
-
+  
 # Internal are these functions that you can use, the source code to view is in the file  simple_preprocessor_pyThor_features_txt.py
 #                                                   the compiled version is in the file  front_compiled.py
 #                                                   for review
 
-#  1)     python quick tags  print pyQuickTags(r"""  """)
+#  1)     python quick tags  print pyQuickTags(r"""  """).initsupers(locals(),globals())
 #  2)                              .htmlentities()   on the python quick tags          (to display source code) (note to wrap your format variable in pre tags for newlines work ok)
 
 #  3)     source_code_from_file(file)                # file is the filename of the source code you would like to display
@@ -966,7 +1006,7 @@ and more of the website too
 </body>
 </html>
 	
-""").htmlentities()
+""").initsupers(locals(),globals()).htmlentities()
 	
 def top_content():
     
@@ -976,7 +1016,7 @@ def top_content():
                                                       # due to a space needed before closing parenthesis 
                                                       # when using triple DOUBLE quotes (no restriction with triple SINGLE quotes by you, the programmer)
 	# at this time, one or no spaces between open parenthesis and open quick tag (no resriction on the close python quick tag as far as spaces around it)
-	print_wwwlog ( pyQuickTags(r""" example of new feature using quick tags between parenthesis """) )
+	print_wwwlog ( pyQuickTags(r""" example of new feature using quick tags between parenthesis """).initsupers(locals(),globals()) )
 	
 	return ' pyThor    @    www.pyThor.us '
 	
@@ -991,14 +1031,14 @@ And saving the file also is fine.
 <br>
 <br>
 hello world  (but html characters are not interpreted this way)
-""")    )  # TWO SMALL CASES TO ESCAPE WITH RAW STRING LITERALS, a backslash before a single quote or double quote 
+""").initsupers(locals(),globals())    )  # TWO SMALL CASES TO ESCAPE WITH RAW STRING LITERALS, a backslash before a single quote or double quote 
           # (depending what are the outer quotes) and if the intent is to have a backslash at the end of a string, need two of them
 
 	return pyQuickTags(r"""
 	 
 {**{var_msg}**}
 
-""").format( var_msg = 'HELLO WORLD - PyThor for Web Programming' )
+""").initsupers(locals(),globals()).format( var_msg = 'HELLO WORLD - PyThor for Web Programming' )
 	 
 def end_content():
 	return 'footer'
@@ -1017,7 +1057,7 @@ code = pyQuickTags(r"""
 
 echo ('   {**{php_width}**}, {**{php_height}**}  ');
 
-""").format( php_width = str(width) , php_height = str(height) )
+""").initsupers(locals(),globals()).format( php_width = str(width) , php_height = str(height) )
 
 # Note, any JavaScript or any other code that contains a curly brace 
 # must double the curly brace when using the python format function with the triple double-quoted string, 
@@ -1027,6 +1067,7 @@ echo ('   {**{php_width}**}, {**{php_height}**}  ');
 # with the use of jQuery's .ready and .getScript that also verifies the JavaScript is syntactically correct.
 # If it is correct to the browser's JavaScript engine, the console.log will successfully print to the browser's console.
 
+global direct_global_var
 
 def output(name):
 # With this New Feature: Open and Close Tags for this python file 
@@ -1034,6 +1075,9 @@ def output(name):
 # Note that the following opening tag, (less-than sign and percent sign) will be replaced by the simple_preprocessor.
 # with this:  PRINT training_wheels_bit_slower_to_remove(""" (lowercase) NOTE: this exact comment line obviously does not run.
 	
+	direct_global_var = 'planet earth, (mercury, venus) mars, etc'
+	direct_local_var = 'hello world'
+	local_var2 = 'hows it going'
 	print pyQuickTags(r"""
 
 <!DOCTYPE html>
@@ -1056,7 +1100,7 @@ jQuery.getScript("first.js", function() {
 </script>
 
 </head>
-<body><br>
+<body><br> {**{direct_local_var}**}  {**{local_var2}**}  {**{direct_global_var}**}
 <a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers -->  <pre style="display:inline">{**{fullsource}**}</pre> <br> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
 <a href="index.php?pythorinfo">pyThorInfo</a> {**{pyThorinfo}**}  <!-- Display pyThor environment by a url get (variable) --> <!-- perhaps put this on different page -->
 <br>{**{testing_output}**}<br>
@@ -1123,7 +1167,7 @@ While still compatible with being able to use python format variables,
 
 </pre>
 
-""").format (   #  %:)>    # UNCOMMENT POINT *A* (uncomment the FIRST comment hash tag for the remove unicode operation   # the arbitrary find string is exactly this 20 characters long, quick workaround to subtract a parenthesis keyword operator # hap face keyword to rid a frown ( removes a close parenthesis ) (an arbitrary keyword created to remove one text character)
+""").initsupers(locals(),globals()).format (   #  %:)>    # UNCOMMENT POINT *A* (uncomment the FIRST comment hash tag for the remove unicode operation   # the arbitrary find string is exactly this 20 characters long, quick workaround to subtract a parenthesis keyword operator # hap face keyword to rid a frown ( removes a close parenthesis ) (an arbitrary keyword created to remove one text character)
 	# variables used
 	top_content = top_content(),
 	mid_content = mid_content(),
@@ -1131,14 +1175,14 @@ While still compatible with being able to use python format variables,
 	php_test    = php(code),  # just testing, remove if coding anything serious
 	
 	domain      = domain_name(name), # or something like whether a mobile device,
-                                     # resolution information, etc. to select which css that fits	
+                                    # resolution information, etc. to select which css that fits	
 
 testing_output = '', #this_is_a_test(),    # test of include file using quick tags python syntax
 
 
 source_variable = source_code(),
 
-example_htmlentities_string = pyQuickTags(r"""  <p><hello world note p tags output><p>  """).htmlentities(), # note, python quick tags stings have .htmlentities method
+example_htmlentities_string = pyQuickTags(r"""  <p><hello world note p tags output><p>  """).initsupers(locals(),globals()).htmlentities(), # note, python quick tags stings have .htmlentities method
 
 filename = os.path.basename(__file__).replace('_compiled.py', '.py'), # php filename witout extension
 
@@ -1174,9 +1218,9 @@ features = display_features() if (QUERY_STRING == 'features') else ''
 
 
 
- # %""")    # UNCOMMENT POINT *B* (uncomment the FIRST comment hash tag for the remove unicode operation)                                           
+ # %""").initsupers(locals(),globals())    # UNCOMMENT POINT *B* (uncomment the FIRST comment hash tag for the remove unicode operation)                                           
 
-# html entities form of print pyQuickTags(r""" """) are to be used within python quick tags of print pyQuickTags(r""" """)     that     are       &lt;% %&gt;  at this time,  Note: this may be a concern, and htmlentities any string containing that will convert it to &amp;lt;% %&amp;gt;
+# html entities form of print pyQuickTags(r""" """).initsupers(locals(),globals()) are to be used within python quick tags of print pyQuickTags(r""" """).initsupers(locals(),globals())     that     are       &lt;% %&gt;  at this time,  Note: this may be a concern, and htmlentities any string containing that will convert it to &amp;lt;% %&amp;gt;
 # Therefore a feature to be implemented is to address that automatically for convenience
 
 # statements marked by UNCOMMENT POINT *A* and *B* uncomment to remove unicode type quick python tags i.e., <unicode> </unicode>  though the contents in between the tags remain intact
@@ -1206,7 +1250,7 @@ $user->purpose = "To print log messages to the browser console messages to the b
 logConsole('$name var', $name, true);
 logConsole('An array of fruits', $fruits, true);
 logConsole('$user object', $user, true);
-""")
+""").initsupers(locals(),globals())
 
  
 	# Written to print to the console log of a web browser
@@ -1241,7 +1285,7 @@ logConsole('$user object', $user, true);
 #   http://stackoverflow.com/questions/843277/how-do-i-check-if-a-variable-exists-in-python same as
 #   to test variable existence http://stackoverflow.com/a/843293  otherwise .ini for initial options
 #   nice unicode description: https://greeennotebook.wordpress.com/2014/05/24/character-sets-and-unicode-in-python/
-#   perhaps something like this for pyQuickTags http://stackoverflow.com/a/3542763 then perhaps a print pyQuickTags(r""" """).formatdirect() method for direct interpolation, a neat idea
+#   perhaps something like this for pyQuickTags http://stackoverflow.com/a/3542763 then perhaps a print pyQuickTags(r""" """).initsupers(locals(),globals()).formatdirect() method for direct interpolation, a neat idea
 
 
 
