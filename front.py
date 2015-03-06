@@ -139,6 +139,8 @@ def output(name):
 	direct_global_var = 'planet earth, (mercury, venus) mars, etc'
 	direct_local_var = 'hello world'
 	local_var2 = 'hows it going'
+	int_var = 1223344
+	float_var = 5566778899.0
 	<%
 
 <!DOCTYPE html>
@@ -159,9 +161,9 @@ jQuery.getScript("first.js", function() {
 	console.log('DONE.');
 });
 </script>
-
+ 
 </head>
-<body><br> {**{direct_local_var}**}  {**{local_var2}**}  {**{direct_global_var}**}
+<body><br> {**{direct_local_var}**}  {**{local_var2}**}  {**{direct_global_var}**} {**{int_var}**} {**{float_var}**}
 <a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers -->  <pre style="display:inline">{**{fullsource}**}</pre> <br> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
 <a href="index.php?pythorinfo">pyThorInfo</a> {**{pyThorinfo}**}  <!-- Display pyThor environment by a url get (variable) --> <!-- perhaps put this on different page -->
 <br>{**{testing_output}**}<br>

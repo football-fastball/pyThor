@@ -206,14 +206,27 @@ class pyQuickTags(str):
 		for item in format_vars:
 
 			data = args[0].get(item)  # locals
-			if type(data) is str:
-				if data:
-					self = self.replace( '{**{'+item+'}**}' , data )
+			if type(data) is str and data:
+				self = self.replace( '{**{'+item+'}**}' , data )
+			elif data is None:
+				pass
+			elif type(data) is int:
+				self = self.replace( '{**{'+item+'}**}' , str(data) )
+			elif type(data) is float:
+				self = self.replace( '{**{'+item+'}**}' , str(data) )
+			#else:
+			#	print '(' + data + ')<br>'
 
+				
 			data = args[1].get(item)  # globals
-			if type(data) is str:
-				if data:
-					self = self.replace( '{**{'+item+'}**}' , data )
+			if type(data) is str and data:
+				self = self.replace( '{**{'+item+'}**}' , data )
+			elif data is None:
+				pass
+			elif type(data) is not int and type(data) is not float:     # filtered due to a function type
+				self = self.replace( '{**{'+item+'}**}' , str(data) )
+			#else:
+			#	print '(' + data + ')<br>'
 
 		return pyQuickTags(self)
 		
