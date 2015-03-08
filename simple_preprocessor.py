@@ -95,7 +95,12 @@ def adjacent(itemA, itemB, new, s): # skips whitespace  # regrettably had to res
 	
 	# therefore:
 	return re.sub(r'\(\s{0,}<%', new, s)  # 0 to many spaces in between the ( and <%     #note: i had to escape the open parenthesis in this regex search
+
+
+def concat2( itemA, itemB, new, s):
 	
+	return re.sub( itemB + r'\s{0,}\+\s{0,}<%', new, s )
+
 	
 def algorithm(s, uni_val=str(True) ):
 	
@@ -109,6 +114,13 @@ def algorithm(s, uni_val=str(True) ):
 	
 	# note adjacent function for any number of spaces between ( and <%
 	s = adjacent('(', '<%', '( pyQuickTags(r"""', s)
+	
+	s = concat2( '+', '%>', '%> + pyQuickTags(r"""', s)
+	
+	s = concat2( '+', "\)",  ') + pyQuickTags(r"""', s)
+	
+	s = concat2( '+', "\'", '\' + pyQuickTags(r"""', s)  # when text in form  ' + %> or " + %> required
+	s = concat2( '+', '\"', '\" + pyQuickTags(r"""', s)  # can comment these two lines out then
 	
 	s = s.replace('<%', 'print pyQuickTags(r"""')
 #		s = s.replace('%%>', ')'+uni_str )    # UNCOMMENT POINT *C* (uncomment the FIRST comment hash tag for the remove unicode operation)      # to remove quick workaround, remove this line

@@ -163,7 +163,13 @@ jQuery.getScript("first.js", function() {
 </script>
  
 </head>
-<body><br> {**{direct_local_var}**}  {**{local_var2}**}  {**{direct_global_var}**} {**{int_var}**} {**{float_var}**}
+<body><br>
+
+%> + pyQuickTags('hello world<br> what is around there').htmlentities() +
+
+<%
+
+ {**{direct_local_var}**}  {**{local_var2}**}  {**{direct_global_var}**} {**{int_var}**} {**{float_var}**}
 <a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers -->  <pre style="display:inline">{**{fullsource}**}</pre> <br> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
 <a href="index.php?pythorinfo">pyThorInfo</a> {**{pyThorinfo}**}  <!-- Display pyThor environment by a url get (variable) --> <!-- perhaps put this on different page -->
 <br>{**{testing_output}**}<br>
