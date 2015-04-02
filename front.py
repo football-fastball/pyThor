@@ -166,11 +166,11 @@ jQuery.getScript("first.js", function() {
 <br>{**{testing_output}**}<br>
 <div id="container">
 
-<div id="top">{**{top_content}**}</div>
+<div id="top">{**{top_content_var}**}</div>
 
-<div id="mid">{**{mid_content}**} <br>  <pre>{**{features}**}</pre>   </div>
+<div id="mid">{**{mid_content_var}**} <br>  <pre>{**{features}**}</pre>   </div>
 
-<div id="end">{**{end_content}**}</div>
+<div id="end">{**{end_content_var}**}</div>
 
 </div>
 
@@ -229,9 +229,9 @@ While still compatible with being able to use python format variables,
 
 %>.format (   #  %:)>    # UNCOMMENT POINT *A* (uncomment the FIRST comment hash tag for the remove unicode operation   # the arbitrary find string is exactly this 20 characters long, quick workaround to subtract a parenthesis keyword operator # hap face keyword to rid a frown ( removes a close parenthesis ) (an arbitrary keyword created to remove one text character)
 	# variables used
-	top_content = top_content(),
-	mid_content = mid_content(),
-	end_content = end_content(),
+	top_content_var = top_content(),
+	mid_content_var = mid_content(),
+	end_content_var = end_content(),
 	php_test    = php(code),  # just testing, remove if coding anything serious
 	
 	domain      = domain_name(name), # or something like whether a mobile device,
