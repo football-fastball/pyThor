@@ -83,6 +83,8 @@ def top_content():
 	
 def mid_content():
 
+	
+	
 	print_wwwlog( <% I am  at  '''''''{}{}{}{} {{{{ }}}} the middle content \a\1\2\3\4\5\6\7\8\9\b\f\v\r\n\t\0\x0B
 	
 	
@@ -99,7 +101,7 @@ hello world  (but html characters are not interpreted this way)
 	 
 {**{var_msg}**}
 
-%>.format( var_msg = 'HELLO WORLD - PyThor for Web Programming' )
+%>.format( var_msg = 'HELLO WORLD! - PyThor for Web Programming' )
 	 
 def end_content():
 	return 'footer'
@@ -116,26 +118,15 @@ width = 100
 height = 100
 code = <%
 
-echo ('   {**{php_width}**}, {**{php_height}**}  ');
+echo ('   {**{width}**}, {**{height}**}  ');
 
-%>.format( php_width = str(width) , php_height = str(height) )
+%>
 
-# Note, any JavaScript or any other code that contains a curly brace 
-# must double the curly brace when using the python format function with the triple double-quoted string, 
-# but not in a JavaScript src file (regardless of using the format function or not).
-
-# It further verifies that the compiled python-like RadScript JavaScript will indeed run,
-# with the use of jQuery's .ready and .getScript that also verifies the JavaScript is syntactically correct.
-# If it is correct to the browser's JavaScript engine, the console.log will successfully print to the browser's console.
 
 global direct_global_var
 
 def output(name):
-# With this New Feature: Open and Close Tags for this python file 
-# (It allows syntax highlighting within the tags, and eases coding)
-# Note that the following opening tag, (less-than sign and percent sign) will be replaced by the simple_preprocessor.
-# with this:  PRINT training_wheels_bit_slower_to_remove(""" (lowercase) NOTE: this exact comment line obviously does not run.
-	
+
 	direct_global_var = 'planet earth, (mercury, venus) mars, etc'
 	direct_local_var = 'hello world'
 	local_var2 = 'hows it going'
@@ -170,14 +161,14 @@ jQuery.getScript("first.js", function() {
 <%
 
  {**{direct_local_var}**}  {**{local_var2}**}  {**{direct_global_var}**} {**{int_var}**} {**{float_var}**}
-<a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers -->  <pre style="display:inline">{**{fullsource}**}</pre> <br> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
+<br><a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers -->  <pre style="display:inline">{**{fullsource}**}</pre> <br> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
 <a href="index.php?pythorinfo">pyThorInfo</a> {**{pyThorinfo}**}  <!-- Display pyThor environment by a url get (variable) --> <!-- perhaps put this on different page -->
 <br>{**{testing_output}**}<br>
 <div id="container">
 
 <div id="top">{**{top_content}**}</div>
 
-<div id="mid">{**{mid_content}**}  <br>  <pre>{**{features}**}</pre>   </div>
+<div id="mid">{**{mid_content}**} <br>  <pre>{**{features}**}</pre>   </div>
 
 <div id="end">{**{end_content}**}</div>
 

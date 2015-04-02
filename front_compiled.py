@@ -42,8 +42,8 @@ global CONTEXT_DOCUMENT_ROOT;global SERVER_ADMIN;global SCRIPT_FILENAME;global R
 global SERVER_PROTOCOL;global REQUEST_METHOD;global QUERY_STRING;global REQUEST_URI;global SCRIPT_NAME;global PHP_SELF;
 global REQUEST_TIME_FLOAT;global REQUEST_TIME;
 
-# tempormental variables ( sometimes received,  though ALWAYS initialized )
-global HTTP_CACHE_CONTROL;global HTTP_REFERER;
+# temperamental variables ( sometimes received,  though ALWAYS initialized )
+global HTTP_CACHE_CONTROL;global HTTP_REFERER;global HTTP_PRAGMA;
 
 
 # These variables are automatically populated by the create_superglobals function, please do NOT edit them!
@@ -55,7 +55,7 @@ SERVER_ADDR='';SERVER_PORT='';REMOTE_ADDR='';DOCUMENT_ROOT='';REQUEST_SCHEME='';
 CONTEXT_DOCUMENT_ROOT='';SERVER_ADMIN='';SCRIPT_FILENAME='';REMOTE_PORT='';GATEWAY_INTERFACE='';
 SERVER_PROTOCOL='';REQUEST_METHOD='';QUERY_STRING='';REQUEST_URI='';SCRIPT_NAME='';PHP_SELF='';
 REQUEST_TIME_FLOAT='';REQUEST_TIME='';
-HTTP_CACHE_CONTROL='';HTTP_REFERER='';
+HTTP_CACHE_CONTROL='';HTTP_REFERER='';HTTP_PRAGMA='';
 
 
 
@@ -104,6 +104,7 @@ def make_tuples(s):		# for direct format variables using python quick tags {**{ 
 			
 	return fv		
 
+	
                   # utags will return the string with unicode type python quick tags ON as its initial value, by default.
                   # for convenience, the utags is a string object that creates a version of the source code when JavaScript is off as a transition until browser native implementation
 class utags(str): # or unicode_show  ,  whichever is a more appropriate label
@@ -322,9 +323,9 @@ $js = <<<JSCODE
 JSCODE;
           echo $js;
      } # end logConsole
-//echo( ' <br> {**{hello}**} <br>');	 
-//echo( '{**{howdy}**}');
-""").initsupers(locals(),globals()).format (  hello='hello world', howdy='very well thanks' )				
+
+	 
+""").initsupers(locals(),globals())
 
 def rawstringify_outerquote(s):
     for format in ["r'{}'", 'r"{}"', "r'''{}'''", 'r"""{}"""']:
@@ -536,7 +537,7 @@ def create_superglobals(args):
 	global HTTP_ACCEPT;        global WINDIR;				 global GATEWAY_INTERFACE;
 	global REMOTE_PORT;        global HTTP_ACCEPT_LANGUAGE;  global REQUEST_SCHEME;
 	global REQUEST_TIME_FLOAT; global HTTP_ACCEPT_ENCODING;
-	global HTTP_CACHE_CONTROL; global HTTP_REFERER;
+	global HTTP_CACHE_CONTROL; global HTTP_REFERER;			 global HTTP_PRAGMA;
 	
 	
 	
@@ -555,7 +556,7 @@ def create_superglobals(args):
 'DOCUMENT_ROOT':17,'COMSPEC':18,'SCRIPT_FILENAME':19,'SERVER_ADMIN':20,'HTTP_HOST':21,'SCRIPT_NAME':22,
 'PATHEXT':23,'HTTP_CACHE_CONTROL':24,'REQUEST_URI':25,'HTTP_ACCEPT':26,'WINDIR':27,'GATEWAY_INTERFACE':28,
 'REMOTE_PORT':29,'HTTP_ACCEPT_LANGUAGE':30,'REQUEST_SCHEME':31,'REQUEST_TIME_FLOAT':32,'HTTP_ACCEPT_ENCODING':33,
-'HTTP_REFERER':34
+'HTTP_REFERER':34,'HTTP_PRAGMA':35
 }
 
 
@@ -641,6 +642,8 @@ def create_superglobals(args):
 				HTTP_ACCEPT_ENCODING = item if (var_name == 'HTTP_ACCEPT_ENCODING' ) else exit_program('HTTP_ACCEPT_ENCODING')
 			elif (x == 34):
 				HTTP_REFERER         = item if (var_name == 'HTTP_REFERER' )         else exit_program('HTTP_REFERER')
+			elif (x == 35):
+				HTTP_PRAGMA          = item if (var_name == 'HTTP_PRAGMA'  )         else exit_program('HTTP_PRAGMA' )
 		else:
 			if   (x == 0):
 				REQUEST_TIME         = item
@@ -712,7 +715,9 @@ def create_superglobals(args):
 				HTTP_ACCEPT_ENCODING = item
 			elif (x == 34):
 				HTTP_REFERER         = item
-
+			elif (x == 35):
+				HTTP_PRAGMA          = item
+				
 	#if (ensure):  # this would perhaps get a performance speedup (not recommended)
 			# these are sort of  None  cases
 
@@ -822,7 +827,10 @@ def create_superglobals(args):
 		if 'HTTP_REFERER' not in pySERVER.keys():
 				HTTP_REFERER                     = ''
 				pySERVER['HTTP_REFERER']         = ''
-
+		if 'HTTP_PRAGMA'  not in pySERVER.keys():
+				HTTP_PRAGMA                      = ''
+				pySERVER['HTTP_PRAGMA' ]         = ''
+		
 	#print 'early exit'
 	#sys.exit(1)
 
@@ -849,88 +857,80 @@ def display_pythorinfo(): # pyThor_info()    display_superglobals()
 'SERVER_SOFTWARE','SERVER_NAME', 'SERVER_ADDR', 'SERVER_PORT', 'REMOTE_ADDR', 'DOCUMENT_ROOT', 'REQUEST_SCHEME', 
 'CONTEXT_PREFIX','CONTEXT_DOCUMENT_ROOT', 'SERVER_ADMIN', 'SCRIPT_FILENAME', 'REMOTE_PORT', 'GATEWAY_INTERFACE', 
 'SERVER_PROTOCOL','REQUEST_METHOD', 'QUERY_STRING', 'REQUEST_URI', 'SCRIPT_NAME'  ]	
-	
+
 	out += pyQuickTags(r""" 
-	<h1>Apache Envionment Variables </h1>
+		<h1>Apache Envionment Variables </h1>
 	
-	<table border="1">
+		<table border="1">
 	""").initsupers(locals(),globals())	
-	
+
 	for item in apache_vars:
 		out += pyQuickTags(r"""
-		
-			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
-	
-	""").initsupers(locals(),globals()).format( name = item , value = pySERVER[item] )                                 
-	
+
+			<tr>	<td> {**{item}**} </td>    <td> {**{value}**} </td>    </tr>
+
+	""").initsupers(locals(),globals()).format(  value = pySERVER[item]  )                                 
+
 	out += pyQuickTags(r"""	</table>	""").initsupers(locals(),globals())
-	
-	
+
 	out += pyQuickTags(r""" 
 		<h1>Printing the pySERVER superglobal variables</h1>
 		<table border="1">
 	""").initsupers(locals(),globals())
-	
+
 	for var_name, item in pySERVER.items():
 		out += pyQuickTags(r"""
-		
+
 			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
-	
+
 	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
-	
+
 	out += pyQuickTags(r"""
 		</table>
-	""").initsupers(locals(),globals())
-	
-	
-	
-	out += pyQuickTags(r""" 
+
+		
 		<h1>Printing the pyGET superglobal variable contents</h1>
 		<table border="1">
 	""").initsupers(locals(),globals())
-	
+
 	for var_name, item in pyGET.items():
 		out += pyQuickTags(r"""
-		
-			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
-	
-	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
-	
-	out += pyQuickTags(r"""	</table>	""").initsupers(locals(),globals())
-	
-	
 
-	out += pyQuickTags(r""" 
+			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
+
+	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
+
+	out += pyQuickTags(r"""
+		</table>
+	
+	
 		<h1>Printing the pyPOST superglobal variable contents</h1>
 		<table border="1">
 	""").initsupers(locals(),globals())
 
-	
 	for var_name, item in pyPOST.items():
 		out += pyQuickTags(r"""
-		
+
 			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
-	
+
 	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
-	
-	out += pyQuickTags(r"""	</table>	""").initsupers(locals(),globals())
-	
-	
-	out += pyQuickTags(r""" 
-	<h1>Printing the pyFILES superglobal variable contents</h1>
-	<table border="1">
-	""").initsupers(locals(),globals())
-	
-	for var_name, item in pyFILES.items():
-		out += pyQuickTags(r"""
-		
-			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
-	
-	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
-	
+
 	out += pyQuickTags(r"""	</table>	""").initsupers(locals(),globals())
 
-	
+	out += pyQuickTags(r""" 
+		<h1>Printing the pyFILES superglobal variable contents</h1>
+		<table border="1">
+	""").initsupers(locals(),globals())
+
+	for var_name, item in pyFILES.items():
+		out += pyQuickTags(r"""
+
+			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
+
+	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
+
+	out += pyQuickTags(r"""	</table>	""").initsupers(locals(),globals())
+
 	
 	return out
 	
@@ -1105,6 +1105,8 @@ def top_content():
 	
 def mid_content():
 
+	
+	
 	print_wwwlog( pyQuickTags(r""" I am  at  '''''''{}{}{}{} {{{{ }}}} the middle content \a\1\2\3\4\5\6\7\8\9\b\f\v\r\n\t\0\x0B
 	
 	
@@ -1121,7 +1123,7 @@ hello world  (but html characters are not interpreted this way)
 	 
 {**{var_msg}**}
 
-""").initsupers(locals(),globals()).format( var_msg = 'HELLO WORLD - PyThor for Web Programming' )
+""").initsupers(locals(),globals()).format( var_msg = 'HELLO WORLD! - PyThor for Web Programming' )
 	 
 def end_content():
 	return 'footer'
@@ -1138,26 +1140,15 @@ width = 100
 height = 100
 code = pyQuickTags(r"""
 
-echo ('   {**{php_width}**}, {**{php_height}**}  ');
+echo ('   {**{width}**}, {**{height}**}  ');
 
-""").initsupers(locals(),globals()).format( php_width = str(width) , php_height = str(height) )
+""").initsupers(locals(),globals())
 
-# Note, any JavaScript or any other code that contains a curly brace 
-# must double the curly brace when using the python format function with the triple double-quoted string, 
-# but not in a JavaScript src file (regardless of using the format function or not).
-
-# It further verifies that the compiled python-like RadScript JavaScript will indeed run,
-# with the use of jQuery's .ready and .getScript that also verifies the JavaScript is syntactically correct.
-# If it is correct to the browser's JavaScript engine, the console.log will successfully print to the browser's console.
 
 global direct_global_var
 
 def output(name):
-# With this New Feature: Open and Close Tags for this python file 
-# (It allows syntax highlighting within the tags, and eases coding)
-# Note that the following opening tag, (less-than sign and percent sign) will be replaced by the simple_preprocessor.
-# with this:  PRINT training_wheels_bit_slower_to_remove(""" (lowercase) NOTE: this exact comment line obviously does not run.
-	
+
 	direct_global_var = 'planet earth, (mercury, venus) mars, etc'
 	direct_local_var = 'hello world'
 	local_var2 = 'hows it going'
@@ -1190,14 +1181,14 @@ jQuery.getScript("first.js", function() {
 """).initsupers(locals(),globals()) + pyQuickTags('hello world<br> what is around there').htmlentities() + pyQuickTags(r"""
 
  {**{direct_local_var}**}  {**{local_var2}**}  {**{direct_global_var}**} {**{int_var}**} {**{float_var}**}
-<a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers -->  <pre style="display:inline">{**{fullsource}**}</pre> <br> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
+<br><a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers -->  <pre style="display:inline">{**{fullsource}**}</pre> <br> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
 <a href="index.php?pythorinfo">pyThorInfo</a> {**{pyThorinfo}**}  <!-- Display pyThor environment by a url get (variable) --> <!-- perhaps put this on different page -->
 <br>{**{testing_output}**}<br>
 <div id="container">
 
 <div id="top">{**{top_content}**}</div>
 
-<div id="mid">{**{mid_content}**}  <br>  <pre>{**{features}**}</pre>   </div>
+<div id="mid">{**{mid_content}**} <br>  <pre>{**{features}**}</pre>   </div>
 
 <div id="end">{**{end_content}**}</div>
 
