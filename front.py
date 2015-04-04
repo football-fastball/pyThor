@@ -262,38 +262,6 @@ features = display_features() if (QUERY_STRING == 'features') else ''
 
 )
 
-
-# display_superglobals()
-
-
-# QUERY_STRING == 'fullsource&no_comments'  without comments
-
-
-#  NOTE:  that within 
-
-
-#.replace( '&amp;lt;%' , '&lt;%' ).replace( '%&amp;gt;', '%&gt;' )
-
-
-
-
-
- # %%>    # UNCOMMENT POINT *B* (uncomment the FIRST comment hash tag for the remove unicode operation)                                           
-
-# html entities form of <% %> are to be used within python quick tags of <% %>     that     are       &lt;% %&gt;  at this time,  Note: this may be a concern, and htmlentities any string containing that will convert it to &amp;lt;% %&amp;gt;
-# Therefore a feature to be implemented is to address that automatically for convenience
-
-# statements marked by UNCOMMENT POINT *A* and *B* uncomment to remove unicode type quick python tags i.e., <unicode> </unicode>  though the contents in between the tags remain intact
-#.unicode_markup()	# this is the method to remove the unicode type python quick tags, and give it a False argument
-					# the utags wrapper already is automatically created
-					# Usage:
-					# place the keyword False in between .unicode_markup() parenthesis to remove the unicode type python quick tags,
-					# i.e., to drop the <unicode> and </unicode> tags but not the contents,text between the tags
-					# by giving the method unicode_markup() the argument of False it will remove the unicode tags
-					# (by removing the argument or by setting it to True that is the same thing) the unicode tags remain intact.
-					# (See front_compiled. in github commit #47 of this project that I specially modified to show a working usage example)
-					# Otherwise, modify this latest version according to usage description
-					
 	# testing writing print statement to the web browser 
 	# the intent is to create a python function to wrap the writing with print statements to the web browser's console
 	code_init = <%
@@ -345,4 +313,3 @@ logConsole('$user object', $user, true);
 #   http://stackoverflow.com/questions/843277/how-do-i-check-if-a-variable-exists-in-python same as
 #   to test variable existence http://stackoverflow.com/a/843293  otherwise .ini for initial options
 #   nice unicode description: https://greeennotebook.wordpress.com/2014/05/24/character-sets-and-unicode-in-python/
-#   perhaps something like this for pyQuickTags http://stackoverflow.com/a/3542763 then perhaps a <% %>.formatdirect() method for direct interpolation, a neat idea

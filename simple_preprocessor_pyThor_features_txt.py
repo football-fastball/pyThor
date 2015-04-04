@@ -48,7 +48,7 @@ global SERVER_PROTOCOL;global REQUEST_METHOD;global QUERY_STRING;global REQUEST_
 global REQUEST_TIME_FLOAT;global REQUEST_TIME;
 
 # temperamental variables ( sometimes received,  though ALWAYS initialized )
-global HTTP_CACHE_CONTROL;global HTTP_REFERER;global HTTP_PRAGMA;
+global HTTP_CACHE_CONTROL;global HTTP_REFERER;global HTTP_PRAGMA;global HTTP_DNT;
 
 
 # These variables are automatically populated by the create_superglobals function, please do NOT edit them!
@@ -60,7 +60,7 @@ SERVER_ADDR='';SERVER_PORT='';REMOTE_ADDR='';DOCUMENT_ROOT='';REQUEST_SCHEME='';
 CONTEXT_DOCUMENT_ROOT='';SERVER_ADMIN='';SCRIPT_FILENAME='';REMOTE_PORT='';GATEWAY_INTERFACE='';
 SERVER_PROTOCOL='';REQUEST_METHOD='';QUERY_STRING='';REQUEST_URI='';SCRIPT_NAME='';PHP_SELF='';
 REQUEST_TIME_FLOAT='';REQUEST_TIME='';
-HTTP_CACHE_CONTROL='';HTTP_REFERER='';HTTP_PRAGMA='';
+HTTP_CACHE_CONTROL='';HTTP_REFERER='';HTTP_PRAGMA='';HTTP_DNT='';
 
 
 
@@ -543,7 +543,7 @@ def create_superglobals(args):
 	global REMOTE_PORT;        global HTTP_ACCEPT_LANGUAGE;  global REQUEST_SCHEME;
 	global REQUEST_TIME_FLOAT; global HTTP_ACCEPT_ENCODING;
 	global HTTP_CACHE_CONTROL; global HTTP_REFERER;			 global HTTP_PRAGMA;
-	
+	global HTTP_DNT;
 	
 	
 
@@ -561,7 +561,7 @@ def create_superglobals(args):
 'DOCUMENT_ROOT':17,'COMSPEC':18,'SCRIPT_FILENAME':19,'SERVER_ADMIN':20,'HTTP_HOST':21,'SCRIPT_NAME':22,
 'PATHEXT':23,'HTTP_CACHE_CONTROL':24,'REQUEST_URI':25,'HTTP_ACCEPT':26,'WINDIR':27,'GATEWAY_INTERFACE':28,
 'REMOTE_PORT':29,'HTTP_ACCEPT_LANGUAGE':30,'REQUEST_SCHEME':31,'REQUEST_TIME_FLOAT':32,'HTTP_ACCEPT_ENCODING':33,
-'HTTP_REFERER':34,'HTTP_PRAGMA':35
+'HTTP_REFERER':34,'HTTP_PRAGMA':35,'HTTP_DNT':36
 }
 
 
@@ -649,6 +649,8 @@ def create_superglobals(args):
 				HTTP_REFERER         = item if (var_name == 'HTTP_REFERER' )         else exit_program('HTTP_REFERER')
 			elif (x == 35):
 				HTTP_PRAGMA          = item if (var_name == 'HTTP_PRAGMA'  )         else exit_program('HTTP_PRAGMA' )
+			elif (x == 36):
+				HTTP_DNT             = item if (var_name == 'HTTP_DNT'     )         else exit_program('HTTP_DNT' )
 		else:
 			if   (x == 0):
 				REQUEST_TIME         = item
@@ -722,6 +724,8 @@ def create_superglobals(args):
 				HTTP_REFERER         = item
 			elif (x == 35):
 				HTTP_PRAGMA          = item
+			elif (x == 36):
+				HTTP_DNT             = item
 				
 	#if (ensure):  # this would perhaps get a performance speedup (not recommended)
 			# these are sort of  None  cases
@@ -835,7 +839,10 @@ def create_superglobals(args):
 		if 'HTTP_PRAGMA'  not in pySERVER.keys():
 				HTTP_PRAGMA                      = ''
 				pySERVER['HTTP_PRAGMA' ]         = ''
-		
+		if 'HTTP_DNT'  not in pySERVER.keys():
+				HTTP_DNT                         = ''
+				pySERVER['HTTP_DNT' ]            = ''
+				
 	#print 'early exit'
 	#sys.exit(1)
 

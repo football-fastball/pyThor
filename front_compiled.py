@@ -43,7 +43,7 @@ global SERVER_PROTOCOL;global REQUEST_METHOD;global QUERY_STRING;global REQUEST_
 global REQUEST_TIME_FLOAT;global REQUEST_TIME;
 
 # temperamental variables ( sometimes received,  though ALWAYS initialized )
-global HTTP_CACHE_CONTROL;global HTTP_REFERER;global HTTP_PRAGMA;
+global HTTP_CACHE_CONTROL;global HTTP_REFERER;global HTTP_PRAGMA;global HTTP_DNT;
 
 
 # These variables are automatically populated by the create_superglobals function, please do NOT edit them!
@@ -55,7 +55,7 @@ SERVER_ADDR='';SERVER_PORT='';REMOTE_ADDR='';DOCUMENT_ROOT='';REQUEST_SCHEME='';
 CONTEXT_DOCUMENT_ROOT='';SERVER_ADMIN='';SCRIPT_FILENAME='';REMOTE_PORT='';GATEWAY_INTERFACE='';
 SERVER_PROTOCOL='';REQUEST_METHOD='';QUERY_STRING='';REQUEST_URI='';SCRIPT_NAME='';PHP_SELF='';
 REQUEST_TIME_FLOAT='';REQUEST_TIME='';
-HTTP_CACHE_CONTROL='';HTTP_REFERER='';HTTP_PRAGMA='';
+HTTP_CACHE_CONTROL='';HTTP_REFERER='';HTTP_PRAGMA='';HTTP_DNT='';
 
 
 
@@ -538,7 +538,7 @@ def create_superglobals(args):
 	global REMOTE_PORT;        global HTTP_ACCEPT_LANGUAGE;  global REQUEST_SCHEME;
 	global REQUEST_TIME_FLOAT; global HTTP_ACCEPT_ENCODING;
 	global HTTP_CACHE_CONTROL; global HTTP_REFERER;			 global HTTP_PRAGMA;
-	
+	global HTTP_DNT;
 	
 	
 
@@ -556,7 +556,7 @@ def create_superglobals(args):
 'DOCUMENT_ROOT':17,'COMSPEC':18,'SCRIPT_FILENAME':19,'SERVER_ADMIN':20,'HTTP_HOST':21,'SCRIPT_NAME':22,
 'PATHEXT':23,'HTTP_CACHE_CONTROL':24,'REQUEST_URI':25,'HTTP_ACCEPT':26,'WINDIR':27,'GATEWAY_INTERFACE':28,
 'REMOTE_PORT':29,'HTTP_ACCEPT_LANGUAGE':30,'REQUEST_SCHEME':31,'REQUEST_TIME_FLOAT':32,'HTTP_ACCEPT_ENCODING':33,
-'HTTP_REFERER':34,'HTTP_PRAGMA':35
+'HTTP_REFERER':34,'HTTP_PRAGMA':35,'HTTP_DNT':36
 }
 
 
@@ -644,6 +644,8 @@ def create_superglobals(args):
 				HTTP_REFERER         = item if (var_name == 'HTTP_REFERER' )         else exit_program('HTTP_REFERER')
 			elif (x == 35):
 				HTTP_PRAGMA          = item if (var_name == 'HTTP_PRAGMA'  )         else exit_program('HTTP_PRAGMA' )
+			elif (x == 36):
+				HTTP_DNT             = item if (var_name == 'HTTP_DNT'     )         else exit_program('HTTP_DNT' )
 		else:
 			if   (x == 0):
 				REQUEST_TIME         = item
@@ -717,6 +719,8 @@ def create_superglobals(args):
 				HTTP_REFERER         = item
 			elif (x == 35):
 				HTTP_PRAGMA          = item
+			elif (x == 36):
+				HTTP_DNT             = item
 				
 	#if (ensure):  # this would perhaps get a performance speedup (not recommended)
 			# these are sort of  None  cases
@@ -830,7 +834,10 @@ def create_superglobals(args):
 		if 'HTTP_PRAGMA'  not in pySERVER.keys():
 				HTTP_PRAGMA                      = ''
 				pySERVER['HTTP_PRAGMA' ]         = ''
-		
+		if 'HTTP_DNT'  not in pySERVER.keys():
+				HTTP_DNT                         = ''
+				pySERVER['HTTP_DNT' ]            = ''
+				
 	#print 'early exit'
 	#sys.exit(1)
 
@@ -1282,38 +1289,6 @@ features = display_features() if (QUERY_STRING == 'features') else ''
 
 )
 
-
-# display_superglobals()
-
-
-# QUERY_STRING == 'fullsource&no_comments'  without comments
-
-
-#  NOTE:  that within 
-
-
-#.replace( '&amp;lt;%' , '&lt;%' ).replace( '%&amp;gt;', '%&gt;' )
-
-
-
-
-
- # %""").initsupers(locals(),globals())    # UNCOMMENT POINT *B* (uncomment the FIRST comment hash tag for the remove unicode operation)                                           
-
-# html entities form of print pyQuickTags(r""" """).initsupers(locals(),globals()) are to be used within python quick tags of print pyQuickTags(r""" """).initsupers(locals(),globals())     that     are       &lt;% %&gt;  at this time,  Note: this may be a concern, and htmlentities any string containing that will convert it to &amp;lt;% %&amp;gt;
-# Therefore a feature to be implemented is to address that automatically for convenience
-
-# statements marked by UNCOMMENT POINT *A* and *B* uncomment to remove unicode type quick python tags i.e., <unicode> </unicode>  though the contents in between the tags remain intact
-#.unicode_markup()	# this is the method to remove the unicode type python quick tags, and give it a False argument
-					# the utags wrapper already is automatically created
-					# Usage:
-					# place the keyword False in between .unicode_markup() parenthesis to remove the unicode type python quick tags,
-					# i.e., to drop the <unicode> and </unicode> tags but not the contents,text between the tags
-					# by giving the method unicode_markup() the argument of False it will remove the unicode tags
-					# (by removing the argument or by setting it to True that is the same thing) the unicode tags remain intact.
-					# (See front_compiled. in github commit #47 of this project that I specially modified to show a working usage example)
-					# Otherwise, modify this latest version according to usage description
-					
 	# testing writing print statement to the web browser 
 	# the intent is to create a python function to wrap the writing with print statements to the web browser's console
 	code_init = pyQuickTags(r"""
@@ -1365,7 +1340,6 @@ logConsole('$user object', $user, true);
 #   http://stackoverflow.com/questions/843277/how-do-i-check-if-a-variable-exists-in-python same as
 #   to test variable existence http://stackoverflow.com/a/843293  otherwise .ini for initial options
 #   nice unicode description: https://greeennotebook.wordpress.com/2014/05/24/character-sets-and-unicode-in-python/
-#   perhaps something like this for pyQuickTags http://stackoverflow.com/a/3542763 then perhaps a print pyQuickTags(r""" """).initsupers(locals(),globals()).formatdirect() method for direct interpolation, a neat idea
 
 
 
