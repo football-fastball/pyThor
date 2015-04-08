@@ -1,6 +1,5 @@
 
 
-
 import os
 import sys
 from subprocess import PIPE, Popen, STDOUT
@@ -43,8 +42,7 @@ global SERVER_PROTOCOL;global REQUEST_METHOD;global QUERY_STRING;global REQUEST_
 global REQUEST_TIME_FLOAT;global REQUEST_TIME;
 
 # temperamental variables ( sometimes received,  though ALWAYS initialized )
-global HTTP_CACHE_CONTROL;global HTTP_REFERER;global HTTP_PRAGMA;global HTTP_DNT;
-
+global HTTP_CACHE_CONTROL;global HTTP_REFERER;global HTTP_PRAGMA;global HTTP_DNT;global HTTP_COOKIE;
 
 # These variables are automatically populated by the create_superglobals function, please do NOT edit them!
 # Note that these variable are available for use throughout your website source code (program), Enjoy!
@@ -55,8 +53,7 @@ SERVER_ADDR='';SERVER_PORT='';REMOTE_ADDR='';DOCUMENT_ROOT='';REQUEST_SCHEME='';
 CONTEXT_DOCUMENT_ROOT='';SERVER_ADMIN='';SCRIPT_FILENAME='';REMOTE_PORT='';GATEWAY_INTERFACE='';
 SERVER_PROTOCOL='';REQUEST_METHOD='';QUERY_STRING='';REQUEST_URI='';SCRIPT_NAME='';PHP_SELF='';
 REQUEST_TIME_FLOAT='';REQUEST_TIME='';
-HTTP_CACHE_CONTROL='';HTTP_REFERER='';HTTP_PRAGMA='';HTTP_DNT='';
-
+HTTP_CACHE_CONTROL='';HTTP_REFERER='';HTTP_PRAGMA='';HTTP_DNT='';HTTP_COOKIE='';
 
 
 def findtags(open, close, s):
@@ -67,19 +64,17 @@ def findtags(open, close, s):
 	
 		idx = s.find(open, idx)
 		if idx == -1:
-			#print 'break point #1 (open tag)'
 			break;
 			
 		idx2 = s.find(close, idx+1)
 		if idx2 == -1:
-			#print 'break point #2 (close tag)'
 			break;
 			
 		item = s[idx+len(open):idx2]
 		t.append(item) # potential variable name
-		#print 'result(' + item + ')'
 		idx += 1
 		item ='' # reset item
+		
 	return t
 
 def make_tuples(s):		# for direct format variables using python quick tags {**{  }**}
@@ -103,15 +98,13 @@ def make_tuples(s):		# for direct format variables using python quick tags {**{ 
 			pos += 4
 			
 	return fv		
-
 	
-                  # utags will return the string with unicode type python quick tags ON as its initial value, by default.
-                  # for convenience, the utags is a string object that creates a version of the source code when JavaScript is off as a transition until browser native implementation
-class utags(str): # or unicode_show  ,  whichever is a more appropriate label
-
+	
+class utags(str): # just an idea
 	def unicode_markup(self, bool=True):
 		return self if bool else self.replace('<unicode>', '').replace('</unicode>','')
-
+		
+		
 class Str_fv(str): # to allow text that appear as format variables
                    # that are not defined in the parameter list of the format method
 	
@@ -126,15 +119,8 @@ class Str_fv(str): # to allow text that appear as format variables
 				if  item == it:
 					self = self.replace(	open+item+close ,  (open+item+close).replace(open, '{').replace(close, '}'  ) )
 					continue
-		#print self
-		#to_write('str_fv_txt.', self) # error checking
-		
+
 		return     str( self ).format(*args, **kwargs)  # note:  .format method converts  {{ to {
-	
-	#nice
-	def to_write(self, file):
-		with open(file, 'w') as fp:
-			fp.write(self)
 
 			
 class pyQuickTags(str):
@@ -142,22 +128,10 @@ class pyQuickTags(str):
 	str_fv = Str_fv()
 	
 	def __init__(self, v):        # optional
-		#v = v.replace('{', '{{').replace('}', '}}').replace('{{**{{', '{').replace('}}**}}', '}')
-		#self = v
-		#print self
 		self.str_fv = Str_fv(v)
-	
 	
 	def format(self, *args, **kwargs):
 
-		# perhaps a direct find   ------------- to do next !!!
-		#val = ''
-		#for name, value in kwargs.items():
-		#	if ( '__formatvariable_stop' == name):
-		#		val = value
-		#		print 'value is:' + val + '<br>'
-		#		break ################################## anyway the   direct find     !
-		
 		opentag=''
 		closetag=''
 		if '__formatvariable_stop' in kwargs:  # note: opentag not used 
@@ -171,11 +145,6 @@ class pyQuickTags(str):
 		return pyQuickTags( self.str_fv.format(*args, **kwargs) ).fullsource_truncate(startfullsource_substring = opentag, endfullsource_substring = closetag)   # or init  str_fv()  at this point
 	
 
-		#return     str( s ).format(*args, **kwargs)  # commented out
-		#return super(QuickTags, self ).lower().format(*args, **kwargs)  # commented out
-		# note, can wrap the super(QuickTags, self ) in a function e.g., something(super(str_fv, self )).format(*args, **kwargs)
-		# or call an additional method as .lower does, etc.
-	
 	def fullsource_truncate(self, startfullsource_substring, endfullsource_substring):
 		
 		startpos = self.find(startfullsource_substring)
@@ -212,10 +181,7 @@ class pyQuickTags(str):
 				self = self.replace( '{**{'+item+'}**}' , str(data) )
 			elif type(data) is long:
 				self = self.replace( '{**{'+item+'}**}' , str(data) )
-			#else:
-			#	print '(' + data + ')<br>'
 
-				
 			data = args[1].get(item)  # globals
 			if type(data) is str and data:
 				self = self.replace( '{**{'+item+'}**}' , data )
@@ -223,8 +189,6 @@ class pyQuickTags(str):
 				pass
 			elif type(data) is not int and type(data) is not float and type(data) is not long:     # filtered due to a function type
 				self = self.replace( '{**{'+item+'}**}' , str(data) )
-			#else:
-			#	print '(' + data + ')<br>'
 
 		return pyQuickTags(self)
 		
@@ -247,18 +211,12 @@ class pyQuickTags(str):
 		
 		return pyQuickTags(var)		#return var # this ok, perhaps to wrap return with QuickTags() to then allow another method call
 		
-
+		
 	def encodehex(self):
 		return pyQuickTags( str(self).encode('hex') )
 
 	def encode(self, how): # or  *args, **kwargs
 		return pyQuickTags( str(self).encode(how) ) # i,e., 'hex'
-		
-	def to_file(self, file):
-		with open(file, 'w') as fp:
-			fp.write(self)
-		return pyQuickTags(self)
-			
 			
 			
 def console_log_function():
@@ -293,6 +251,7 @@ def console_log_function():
           $data = ltrim(rtrim($data, '"'), '"');
           $data = $isevaled ? $data : ($data[0] === "'") ? $data : "'" . $data . "'";
 $js = <<<JSCODE
+
 <script>
      // fallback - to deal with IE (or browsers that don't have console)
      if (! window.console) console = {};
@@ -318,27 +277,13 @@ $js = <<<JSCODE
      console.log('------------------------------------------');
      console.log('$type');
      console.log(hex2asc($data));
-     //console.log('\\\\n');
+
 </script>
+
 JSCODE;
-          echo $js;
+        echo $js;
      } # end logConsole
-
-	 
 """).initsupers(locals(),globals())
-
-def rawstringify_outerquote(s):
-    for format in ["r'{}'", 'r"{}"', "r'''{}'''", 'r"""{}"""']:
-        rawstring = format.format(s)
-        try:
-            reparsed = ast.literal_eval(rawstring)
-            if reparsed == s:
-                return rawstring[1]
-        except SyntaxError:
-            pass
-    raise ValueError('rawstringify received an invalid raw string')
-	
-
 
 
 # compiler functions
@@ -400,38 +345,18 @@ def include_quick_tags_file(source):
 	f = os.path.abspath(compile_include_quick_tags(source)) # compiled variable
 	print( '<br>file to include('+f+')' )
 	
-	# initially the idea was to compile here with the following statement:
-	#execfile(compiled) # require fullpath, includes file   (though having a scope issue here)
-				
-	return f # hmm, how in -antastic is this, workaround needed by the receiver of this return when same file format is true
-
-	
+	return f
 	
 
-def print_wwwlog(s, literal = True):    # prints to brower's console log
+def print_wwwlog(s):    # prints to brower's console log
 	
-	if (literal):
-		quote = rawstringify_outerquote(s)   # these 5 statements will occur when we turn on the  print_literal option
-		if (quote == '"' ):                  # or    literal = True
-			s = s.replace('\\"', '"')        #
-                                             # as of at this moment, it converts each print_wwwlog statement to
-		if (quote == "'" ):                  # raw string literal with a new and innovative  simple_preprocessor_auto_print_literal.  step
-			s = s.replace("\\'", "'")        # the reason is to output messages to the brower console without escaping (actually its the most minimal escaping required)
-                                             # see the comment about "TWO SMALL CASES TO ESCAPE WITH RAW STRING LITERALS" down below
-											
-	# not to encode to ascii, better to use raw strings
-	#if (not esc_sequences_already):     # to get close to wysiwyg --   and perhaps innovative, Unicode tags proposed
-	#	s = 'Lee: ' + s.encode('ascii')  # just to write lines, used during programming, statement can be removed
-                                         # the way print_wwwlog() works is that it will either print ascii messages to the console or, you can escape characters,
-                                         # that will give you the same result, that will have to be interpreted anyway at the web browser as unicode,
-                                         # perhaps put <unicode></unicode> and or <utf8></utf8> tags (and their uppercase forms) that I have arbitrarily innovated around utf8 strings to identify that.
-		s = s.encode('hex')              # though perhaps browser's would identify that, or not, otherwise comment tags could be put around the unicode tags just mentioned <-- --> and javscript would convert to the required unicode text characters
-		s = '<hex>'+s+'</hex>'           # if newlines actually needed, then there's use of html tags, e.g., <br> and so on... (perhaps even arbitrary tags for things like tabs <tabs> defined by css and so on...)
+	s = s.encode('hex')              
+	s = '<hex>'+s+'</hex>'           
 		
 	code_init = pyQuickTags(r"""
-$name1 = '%s';
+$name1 = '{**{s}**}';
 logConsole('$name1 var', $name1, true);
-""").initsupers(locals(),globals()) % s
+""").initsupers(locals(),globals())
 	wwwout = code_init + "\n" + console_log_function()
 	print php(  wwwout  ) # to web
 
@@ -460,17 +385,9 @@ def source_code_from_file(file):
 """).initsupers(locals(),globals()).format( source_variable = source ).htmlentities()   # when htmlentities not needed, then either remove the .htmlentities method, different function name with different code, (perhaps an override local function (w/same name) in website source, (though this override technique could cause confusion) ), or a htmlentities with a boolean arg,parameter version, etc.
 
 
-
-
-def geturldecode_php(s):
-	
-	code_init = r""" echo htmlentities('{geturl}');""".format( geturl = s )   # or r"""   """
-	return php(code_init)
-	
 def exit_program(var):
 	print 'early exit, ensure verified, variable name different, at the variable: ' + var + '<br>'
 	sys.exit(1)
-
 
 def read_superglobalvariable_file(file):
 	
@@ -492,8 +409,6 @@ def create_superglobals(args):
 	global pyPOST
 	global pyFILES
 
-
-	
 	if sys.argv[2] == 'file': # i.e., > 8000 in length ( workaround dos prompt limit via passthru )
 	
 		print 'file mode workaround' + '<br>'    # perhaps virtual in-memory file solution (to this) 
@@ -507,21 +422,18 @@ def create_superglobals(args):
 		print 'arr2:'+ arr[2] + '<br>'     # pyPOST
 		print 'arr3:'+ arr[3] + '<br>'     # pyFILES
 		
-
 		data     = json.loads( arr[0] )  # from a file, first line         # could directly load to pySERVER
 		pyGET    = json.loads( arr[1] ) if not(to_str(arr[1])=='') else {} # in case its an empty string       (   previous code:  # if arr[1]=='' else {}      )
 		pyPOST   = json.loads( arr[2] ) if not(to_str(arr[2])=='') else {}
 		pyFILES  = json.loads( arr[3] ) if not(to_str(arr[3])=='') else {}
 	
 	else:
-										 # from dos prompt args sequence (received as string type)
+                                         # from dos prompt args sequence (received as string type)
 		data     = json.loads( sys.argv[2].decode('hex') ) # could directly load to pySERVER (but going to ensure both pySERVER contents and convenience variables same data (and also verify that at minimum are presumed to exist) )
 		pyGET    = json.loads( sys.argv[3].decode('hex') ) if not(to_str(sys.argv[3].decode('hex'))=='') else {} # when received as   5b5d  (its hex version of an empty string)  , empty string '' converted then to a {}
 		pyPOST   = json.loads( sys.argv[4].decode('hex') ) if not(to_str(sys.argv[4].decode('hex'))=='') else {} # when received as   5b5d  (its hex version of an empty string)  , empty string '' converted then to a {}
 		pyFILES  = json.loads( sys.argv[5].decode('hex') ) if not(to_str(sys.argv[5].decode('hex'))=='') else {} # when received as   5b5d  (its hex version of an empty string)  , empty string '' converted then to a {}
 		
-		
-	
 	##### e.g.,   global QUERY_STRING  only to edit, readonly is accessible (works different in PHP)
 	
 	global warn_when_new_php_variables
@@ -534,19 +446,17 @@ def create_superglobals(args):
 	global REMOTE_ADDR;        global SERVER_PROTOCOL;       global SERVER_PORT;     global SERVER_ADDR;
 	global DOCUMENT_ROOT;      global COMSPEC;               global SCRIPT_FILENAME; global SERVER_ADMIN;
 	global HTTP_HOST;          global SCRIPT_NAME;           global PATHEXT;         global REQUEST_URI;
-	global HTTP_ACCEPT;        global WINDIR;				 global GATEWAY_INTERFACE;
+	global HTTP_ACCEPT;        global WINDIR;                global GATEWAY_INTERFACE;
 	global REMOTE_PORT;        global HTTP_ACCEPT_LANGUAGE;  global REQUEST_SCHEME;
 	global REQUEST_TIME_FLOAT; global HTTP_ACCEPT_ENCODING;
-	global HTTP_CACHE_CONTROL; global HTTP_REFERER;			 global HTTP_PRAGMA;
-	global HTTP_DNT;
-	
+	global HTTP_CACHE_CONTROL; global HTTP_REFERER;          global HTTP_PRAGMA;
+	global HTTP_DNT;           global HTTP_COOKIE;
 	
 
 	for var_name, item in data.items(): # to populate the data structure, dict
 		pySERVER[var_name] = item
 		
 
-	
 	# this is to assign the variable names to indices, to do unable at this time to assign string variable names to the variables directly
 	# therefore, this is the purpose for the   ensure   variable
 	server_variables = { 	
@@ -556,11 +466,10 @@ def create_superglobals(args):
 'DOCUMENT_ROOT':17,'COMSPEC':18,'SCRIPT_FILENAME':19,'SERVER_ADMIN':20,'HTTP_HOST':21,'SCRIPT_NAME':22,
 'PATHEXT':23,'HTTP_CACHE_CONTROL':24,'REQUEST_URI':25,'HTTP_ACCEPT':26,'WINDIR':27,'GATEWAY_INTERFACE':28,
 'REMOTE_PORT':29,'HTTP_ACCEPT_LANGUAGE':30,'REQUEST_SCHEME':31,'REQUEST_TIME_FLOAT':32,'HTTP_ACCEPT_ENCODING':33,
-'HTTP_REFERER':34,'HTTP_PRAGMA':35,'HTTP_DNT':36
+'HTTP_REFERER':34,'HTTP_PRAGMA':35,'HTTP_DNT':36,'HTTP_COOKIE':37
 }
 
 
-	
 	for var_name, item in data.items():
 
 		if var_name in server_variables:
@@ -570,7 +479,7 @@ def create_superglobals(args):
 				print '<br>WARNING: Note that this variable is accessible through the pySERVER superglobal variable only at this time('+var_name+')' +'<br>'
 			continue
 			
-		if (ensure): #verifies again
+		if (ensure):
 		
 			if   (x == 0):
 				REQUEST_TIME         = item if (var_name == 'REQUEST_TIME' )         else exit_program('REQUEST_TIME')
@@ -631,7 +540,7 @@ def create_superglobals(args):
 			elif (x == 28):
 				GATEWAY_INTERFACE    = item if (var_name == 'GATEWAY_INTERFACE' )    else exit_program('GATEWAY_INTERFACE')
 			elif (x == 29):
-				REMOTE_PORT 		 = item if (var_name == 'REMOTE_PORT' ) 		 else exit_program('REMOTE_PORT')
+				REMOTE_PORT          = item if (var_name == 'REMOTE_PORT' )          else exit_program('REMOTE_PORT')
 			elif (x == 30):
 				HTTP_ACCEPT_LANGUAGE = item if (var_name == 'HTTP_ACCEPT_LANGUAGE' ) else exit_program('HTTP_ACCEPT_LANGUAGE')
 			elif (x == 31):
@@ -643,9 +552,11 @@ def create_superglobals(args):
 			elif (x == 34):
 				HTTP_REFERER         = item if (var_name == 'HTTP_REFERER' )         else exit_program('HTTP_REFERER')
 			elif (x == 35):
-				HTTP_PRAGMA          = item if (var_name == 'HTTP_PRAGMA'  )         else exit_program('HTTP_PRAGMA' )
+				HTTP_PRAGMA          = item if (var_name == 'HTTP_PRAGMA' )          else exit_program('HTTP_PRAGMA')
 			elif (x == 36):
-				HTTP_DNT             = item if (var_name == 'HTTP_DNT'     )         else exit_program('HTTP_DNT' )
+				HTTP_DNT             = item if (var_name == 'HTTP_DNT'    )          else exit_program('HTTP_DNT')
+			elif (x == 37):
+				HTTP_COOKIE          = item if (var_name == 'HTTP_COOKIE' )          else exit_program('HTTP_COOKIE')
 		else:
 			if   (x == 0):
 				REQUEST_TIME         = item
@@ -706,7 +617,7 @@ def create_superglobals(args):
 			elif (x == 28):
 				GATEWAY_INTERFACE    = item 
 			elif (x == 29):
-				REMOTE_PORT 		 = item 
+				REMOTE_PORT          = item 
 			elif (x == 30):
 				HTTP_ACCEPT_LANGUAGE = item 
 			elif (x == 31):
@@ -721,11 +632,9 @@ def create_superglobals(args):
 				HTTP_PRAGMA          = item
 			elif (x == 36):
 				HTTP_DNT             = item
-				
-	#if (ensure):  # this would perhaps get a performance speedup (not recommended)
-			# these are sort of  None  cases
-
-		# mutually distinct therefore if without the elif  are fine  (perhaps a performance boost with the if elif )
+			elif (x == 37):
+				HTTP_COOKIE          = item
+			
 		if 'REQUEST_TIME' not in pySERVER.keys():
 				REQUEST_TIME                 = ''
 				pySERVER['REQUEST_TIME']     = ''
@@ -814,7 +723,7 @@ def create_superglobals(args):
 				GATEWAY_INTERFACE                = ''
 				pySERVER['GATEWAY_INTERFACE']    = ''
 		if 'REMOTE_PORT' not in pySERVER.keys():
-				REMOTE_PORT 		             = ''
+				REMOTE_PORT                      = ''
 				pySERVER['REMOTE_PORT']          = ''
 		if 'HTTP_ACCEPT_LANGUAGE' not in pySERVER.keys():
 				HTTP_ACCEPT_LANGUAGE             = ''
@@ -833,24 +742,16 @@ def create_superglobals(args):
 				pySERVER['HTTP_REFERER']         = ''
 		if 'HTTP_PRAGMA'  not in pySERVER.keys():
 				HTTP_PRAGMA                      = ''
-				pySERVER['HTTP_PRAGMA' ]         = ''
-		if 'HTTP_DNT'  not in pySERVER.keys():
+				pySERVER['HTTP_PRAGMA']          = ''
+		if 'HTTP_DNT'     not in pySERVER.keys():
 				HTTP_DNT                         = ''
-				pySERVER['HTTP_DNT' ]            = ''
-				
-	#print 'early exit'
-	#sys.exit(1)
+				pySERVER['HTTP_DNT']             = ''
+		if 'HTTP_COOKIE'  not in pySERVER.keys():
+				HTTP_COOKIE                      = ''
+				pySERVER['HTTP_COOKIE']          = ''
 
-	
-#if 'key1' in dict.keys():
-#  print "blah"
-#else:
-#  print "boo"
-#	
-	
 
-		
-def display_pythorinfo(): # pyThor_info()    display_superglobals()
+def display_pythorinfo():
 
 	#global pySERVER      # only when editing...
 	#global pyGET		  #...
@@ -878,9 +779,9 @@ def display_pythorinfo(): # pyThor_info()    display_superglobals()
 
 	""").initsupers(locals(),globals()).format(  value = pySERVER[item]  )                                 
 
-	out += pyQuickTags(r"""	</table>	""").initsupers(locals(),globals())
+	out += pyQuickTags(r"""	
+		</table>
 
-	out += pyQuickTags(r""" 
 		<h1>Printing the pySERVER superglobal variables</h1>
 		<table border="1">
 	""").initsupers(locals(),globals())
@@ -890,12 +791,11 @@ def display_pythorinfo(): # pyThor_info()    display_superglobals()
 
 			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
 
-	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
+	""").initsupers(locals(),globals()).format( name = var_name , value = item )
 
 	out += pyQuickTags(r"""
 		</table>
 
-		
 		<h1>Printing the pyGET superglobal variable contents</h1>
 		<table border="1">
 	""").initsupers(locals(),globals())
@@ -905,11 +805,10 @@ def display_pythorinfo(): # pyThor_info()    display_superglobals()
 
 			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
 
-	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
+	""").initsupers(locals(),globals()).format( name = var_name , value = item )
 
 	out += pyQuickTags(r"""
 		</table>
-	
 	
 		<h1>Printing the pyPOST superglobal variable contents</h1>
 		<table border="1">
@@ -918,13 +817,13 @@ def display_pythorinfo(): # pyThor_info()    display_superglobals()
 	for var_name, item in pyPOST.items():
 		out += pyQuickTags(r"""
 
-			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
+			<tr> <td> {**{name}**} </td>  <td> {**{value}**} </td> </tr>
 
-	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
+	""").initsupers(locals(),globals()).format( name = var_name , value = item )
 
-	out += pyQuickTags(r"""	</table>	""").initsupers(locals(),globals())
-
-	out += pyQuickTags(r""" 
+	out += pyQuickTags(r"""	
+		</table>
+		
 		<h1>Printing the pyFILES superglobal variable contents</h1>
 		<table border="1">
 	""").initsupers(locals(),globals())
@@ -932,13 +831,12 @@ def display_pythorinfo(): # pyThor_info()    display_superglobals()
 	for var_name, item in pyFILES.items():
 		out += pyQuickTags(r"""
 
-			<tr>	<td> {**{name}**} </td>    <td> {**{value}**} </td>    </tr>
+			<tr> <td> {**{name}**} </td>  <td> {**{value}**} </td> </tr>
 
-	""").initsupers(locals(),globals()).format( name = var_name , value = item )    #   or something like    out += '<tr><td>'+var_name+'</td> <td>'+str( item )+'</td></tr>'
+	""").initsupers(locals(),globals()).format( name = var_name , value = item )
 
 	out += pyQuickTags(r"""	</table>	""").initsupers(locals(),globals())
 
-	
 	return out
 	
 # (exactly) from simple_preprocesor.py 
@@ -989,23 +887,18 @@ def get_fullsource(comments = True, pretags=False): # True initially
 	
 	source = source.replace('_compiled.py', '.py')
 	
-
 	with open(source, 'r') as rp:
 		s = rp.read()
 	
 	out = '*--START OF FULL SOURCE--*'.replace(' ', '_')
 	
-	#        when_true                     when_false
 	out += '*openpre-*'+salt  if (pretags) else   ''
-	
 	
 	out += features + s + mainintro
 	
-
 	out += '*closepre-*'+salt if (pretags) else   ''
 	
 	out += '*--END OF FULL SOURCE--*'.replace(' ', '_')
-	
 	
 	return replace_when_yes( pyQuickTags(out).htmlentities(), salted_opentag='*openpre-*'+salt, salted_closetag='*closepre-*'+salt, bool_when=pretags, salt_flavor = salt )
 
@@ -1025,12 +918,12 @@ def print_args(s, intro=''):
 	print( intro )
 	for x, item in enumerate(s):
 		print( 'ARG:'+str(x)+'(' + item + ')' ) + '<br>'
-	
-	
+
+		
 import os
 import sys
 
-  
+# pyThor (pyTron) page
 # Internal are these functions that you can use, the source code to view is in the file  simple_preprocessor_pyThor_features_txt.py
 #                                                   the compiled version is in the file  front_compiled.py
 #                                                   for review
@@ -1063,15 +956,9 @@ import sys
 
 # INCLUDES TO BE PLACED HERE
 file_to_include = 'include.py'
-# including this way due to execfile does not including a file within a def,function as I expected
-#execfile(include_quick_tags_file(file_to_include))	# this functin used to include each python file with quick tags		 
-
-# NOTE: include section of source code with two entries due to workaround needed for execfile def,function
-execfile(include_quick_tags_file(file_to_include))
+execfile(include_quick_tags_file(file_to_include)) # including this way due to execfile does not include file within a def,function
 
 
-
-		
 def source_code():   # note, this is just source code print to display, not the entire page of the function output prints to the web browser, screen
 	return pyQuickTags(r"""
 <html>
@@ -1100,42 +987,32 @@ and more of the website too
 	
 def top_content():
     
-	print_wwwlog( '''I am at " the top " content''' ) # NOTE: better to use triple single quotes , best to put a space before and after a triple quoted string (though not necessary for triple SINGLE quotes)
-	                                                  # (the open and close quick tags (< % % > with no spaces) to denote a 
-                                                      # triple double quoted string ONLY for return and assignment statements at this time) 
-                                                      # due to a space needed before closing parenthesis 
-                                                      # when using triple DOUBLE quotes (no restriction with triple SINGLE quotes by you, the programmer)
-	# at this time, one or no spaces between open parenthesis and open quick tag (no resriction on the close python quick tag as far as spaces around it)
-	print_wwwlog ( pyQuickTags(r""" example of new feature using quick tags between parenthesis """).initsupers(locals(),globals()) )
+	print_wwwlog( pyQuickTags(r""" This string is at the top content """).initsupers(locals(),globals()) ) 
+	
+	print_wwwlog ( pyQuickTags(r""" another example of new feature using quick tags between parenthesis """).initsupers(locals(),globals()) )
 	
 	return ' pyThor    @    www.pyThor.us '
 	
 def mid_content():
 
+	var_msg = 'HELLO WORLD! - PyThor for Web Programming'
 	
-	
-	print_wwwlog( pyQuickTags(r""" I am  at  '''''''{}{}{}{} {{{{ }}}} the middle content \a\1\2\3\4\5\6\7\8\9\b\f\v\r\n\t\0\x0B
-	
-	
-I have denoted newlines within a raw string , sent to the web browser that also interprets as newlines
-And saving the file also is fine.
-
+	print_wwwlog( pyQuickTags(r""" This string is at the middle content
 <br>
 <br>
-hello world  (but html characters are not interpreted this way)
-""").initsupers(locals(),globals())    )  # TWO SMALL CASES TO ESCAPE WITH RAW STRING LITERALS, a backslash before a single quote or double quote 
-          # (depending what are the outer quotes) and if the intent is to have a backslash at the end of a string, need two of them
+hello world  (but html tags are raw string literal strings within browser console log window)
+""").initsupers(locals(),globals())    )
 
 	return pyQuickTags(r"""
 	 
 {**{var_msg}**}
 
-""").initsupers(locals(),globals()).format( var_msg = 'HELLO WORLD! - PyThor for Web Programming' )
+""").initsupers(locals(),globals())
 	 
 def end_content():
 	return 'footer'
-	
-# in the case not transferring data from php using multiple domains, simply revert to a previous version, commit 
+
+
 def domain_name(s):   
 	if(s == 'A'):
 		return 'us'
@@ -1185,8 +1062,6 @@ jQuery.getScript("first.js", function() {
 </head>
 <body><br>
 
-""").initsupers(locals(),globals()) + pyQuickTags('hello world<br> what is around there').htmlentities() + pyQuickTags(r"""
-
  {**{direct_local_var}**}  {**{local_var2}**}  {**{direct_global_var}**} {**{int_var}**} {**{float_var}**}
 <br><a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers -->  <pre style="display:inline">{**{fullsource}**}</pre> <br> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
 <a href="index.php?pythorinfo">pyThorInfo</a> {**{pyThorinfo}**}  <!-- Display pyThor environment by a url get (variable) --> <!-- perhaps put this on different page -->
@@ -1201,9 +1076,11 @@ jQuery.getScript("first.js", function() {
 
 </div>
 
+String Tests:
 NOTE: Just Testing OUTPUT HERE (note: the following escape characters need double backslash (octals not tested at this time)<br>
 \\\r\\n\\t\\0\\x0B  testing1, expected
 <br>
+
 \\a\\1\\2\\3\\4\\5\\6\\7\\8\\9\\b\\f\\v\\r\\n\\t\\0\\x0B   testing2, expected
 Result: Easy dealing with escape characters here. Though a python def, function like PHP's htmlentities still perhaps required (to be written,created)
 <br>
@@ -1254,39 +1131,32 @@ While still compatible with being able to use python format variables,
 
 </pre>
 
-""").initsupers(locals(),globals()).format (   #  %:)>    # UNCOMMENT POINT *A* (uncomment the FIRST comment hash tag for the remove unicode operation   # the arbitrary find string is exactly this 20 characters long, quick workaround to subtract a parenthesis keyword operator # hap face keyword to rid a frown ( removes a close parenthesis ) (an arbitrary keyword created to remove one text character)
-	# variables used
+""").initsupers(locals(),globals()).format (   # variables used
+	
 	top_content_var = top_content(),
 	mid_content_var = mid_content(),
 	end_content_var = end_content(),
 	php_test    = php(code),  # just testing, remove if coding anything serious
-	
-	domain      = domain_name(name), # or something like whether a mobile device,
-                                    # resolution information, etc. to select which css that fits	
 
-testing_output = '', #this_is_a_test(),    # test of include file using quick tags python syntax
+	domain = 'us' if (name == 'A') else  'com',                  # else (name == 'WIDE')  # or something like whether a mobile device, resolution information, etc. to select which css that fits
 
+	testing_output = '', #this_is_a_test(),    # test of include file using quick tags python syntax
 
-source_variable = source_code(),
+	source_variable = source_code(),
 
-example_htmlentities_string = pyQuickTags(r"""  <p><hello world note p tags output><p>  """).initsupers(locals(),globals()).htmlentities(), # note, python quick tags stings have .htmlentities method
+	example_htmlentities_string = pyQuickTags(r"""  <p><hello world note p tags output><p>  """).initsupers(locals(),globals()).htmlentities(), # note, python quick tags stings have .htmlentities method
 
-filename = os.path.basename(__file__).replace('_compiled.py', '.py'), # php filename witout extension
+	filename = os.path.basename(__file__).replace('_compiled.py', '.py'), # php filename witout extension
 
-fullsource = get_fullsource(comments = True, pretags=True) if (QUERY_STRING == 'fullsource') else '' , 
+	fullsource = get_fullsource(comments = True, pretags=True) if (QUERY_STRING == 'fullsource') else '' , 
 
-# __formatvariable_stop = (  '*--END OF FULL SOURCE--*'.replace(' ', '_' ) ) if (QUERY_STRING == 'fullsource') else '',  #   or perhaps to name it   __sysexit()  to truncate at the substring (note use of __ variables NOT recommended)
+	 __formatvariable_range = ('*--START OF FULL SOURCE--*'.replace(' ', '_' ) , '*--END OF FULL SOURCE--*'.replace(' ', '_' )) if (QUERY_STRING == 'fullsource') else ('',''),
 
- __formatvariable_range = ('*--START OF FULL SOURCE--*'.replace(' ', '_' ) , '*--END OF FULL SOURCE--*'.replace(' ', '_' )) if (QUERY_STRING == 'fullsource') else ('',''),
+	fullsourcelink = './index.php?fullsource',
 
-fullsourcelink = './index.php?fullsource',
+	pyThorinfo = display_pythorinfo()  if (QUERY_STRING == 'pythorinfo') else '',   #remove this line to remove the url feature  # for demonstration purpose only, please remove the next line for production code (it is however a feature that is available at any time should you code it)
 
-
-# for demonstration purpose only, please remove the next line for production code (it is however a feature that is available at any time should you code it)
-pyThorinfo = display_pythorinfo()  if (QUERY_STRING == 'pythorinfo') else '',   #remove this line to remove the url feature
-
-features = display_features() if (QUERY_STRING == 'features') else ''
-
+	features = display_features() if (QUERY_STRING == 'features') else ''
 )
 
 	# testing writing print statement to the web browser 
@@ -1307,33 +1177,18 @@ logConsole('An array of fruits', $fruits, true);
 logConsole('$user object', $user, true);
 """).initsupers(locals(),globals())
 
- 
 	# Written to print to the console log of a web browser
-
-	# Including an external python file that uses quick tags, (both open and close tags), and a format string variable syntax of {**{variable_name}**}
-	
 	s = (code_init + "\n" + console_log_function()  )
 	
-	# Escaping quotes seem to be the only small hassle from converting php source code to php source code within a python triple quoted string 
-	# (due to the slightly obtuse (yet it works) situation of... running PHP then system calling python and within it, running PHP within a python triple quoted string)
-	# therefore, NOTE: the extra backslash compared with the php version
-	# this will convert it to the exact php, but I've no need of it at this time, though note the following variable name in the comments (the immediate next line)
-	# string_to_write__NOT_DISPLAY_for_exact_PHP_equivalent_source_code = s.replace("#\\'#", "#'#").replace('#\\"\\"#', '#""#').replace("#\\'\\'#", "#''#")   # works, tested
-	# The previous statement string (in the comments) can be used to write if desired to get the exact PHP equivalent that is different than the string used to output to the web page 
-	# (due to an extra backslash required by python for quotes)
-
-	
-	# For convenience I've included it in the following write statement anyway (to get the exact equivalent to the PHP source code string)
+	# (to get the exact equivalent to the PHP source code string)
 	# The next line is optional to the OUTPUT to Web (i.e., it will not affect the display OUTPUT to web 
-	# (only for the previously stated purpose. So it's just to inspect and review the string by writing it to a file)
+	# it's just to inspect and review the string by writing it to a file)
 	s = s.replace("#\\'#", "#'#").replace('#\\"\\"#', '#""#').replace("#\\'\\'#", "#''#") # comment this line out to view the exact string that gets OUTPUT to the web
-	
-	#to_write('testit.txt', s ) # uses to determine problematic characters only, can be removed, and to verify the contents of a php string by outputing to a file
 	
 	# TO OUTPUT to web
 	print php(  s   )
 
-	
+
 
 #   notes:
 #   https://sarfraznawaz.wordpress.com/2012/01/05/outputting-php-to-browser-console/
@@ -1346,8 +1201,7 @@ logConsole('$user object', $user, true);
 if __name__ == "__main__":  # in the case not transferring data from php, then simply revert to a previous version, commit
 	
 	print 'pyThor (pyThor,server-side) (rapydscript, python client-side javascript)'
-	#print_args(sys.argv, '<br>HERE front.py '+'<br>')		# to view the arguments that are sent to PyThor (from PHP)
-		
+
 	create_superglobals(sys.argv)
 	
 	if( not len(sys.argv) >= 2 ):
@@ -1355,6 +1209,5 @@ if __name__ == "__main__":  # in the case not transferring data from php, then s
 		sys.exit(1)
 		
 	output(name=sys.argv[1])
-	
-	  
+
 

@@ -1,7 +1,7 @@
 import os
 import sys
 
-  
+# pyThor (pyTron) page
 # Internal are these functions that you can use, the source code to view is in the file  simple_preprocessor_pyThor_features_txt.py
 #                                                   the compiled version is in the file  front_compiled.py
 #                                                   for review
@@ -34,15 +34,9 @@ import sys
 
 # INCLUDES TO BE PLACED HERE
 file_to_include = 'include.py'
-# including this way due to execfile does not including a file within a def,function as I expected
-#execfile(include_quick_tags_file(file_to_include))	# this functin used to include each python file with quick tags		 
-
-# NOTE: include section of source code with two entries due to workaround needed for execfile def,function
-execfile(include_quick_tags_file(file_to_include))
+execfile(include_quick_tags_file(file_to_include)) # including this way due to execfile does not include file within a def,function
 
 
-
-		
 def source_code():   # note, this is just source code print to display, not the entire page of the function output prints to the web browser, screen
 	return <%
 <html>
@@ -71,42 +65,32 @@ and more of the website too
 	
 def top_content():
     
-	print_wwwlog( '''I am at " the top " content''' ) # NOTE: better to use triple single quotes , best to put a space before and after a triple quoted string (though not necessary for triple SINGLE quotes)
-	                                                  # (the open and close quick tags (< % % > with no spaces) to denote a 
-                                                      # triple double quoted string ONLY for return and assignment statements at this time) 
-                                                      # due to a space needed before closing parenthesis 
-                                                      # when using triple DOUBLE quotes (no restriction with triple SINGLE quotes by you, the programmer)
-	# at this time, one or no spaces between open parenthesis and open quick tag (no resriction on the close python quick tag as far as spaces around it)
-	print_wwwlog ( <% example of new feature using quick tags between parenthesis %> )
+	print_wwwlog( <% This string is at the top content %> ) 
+	
+	print_wwwlog ( <% another example of new feature using quick tags between parenthesis %> )
 	
 	return ' pyThor    @    www.pyThor.us '
 	
 def mid_content():
 
+	var_msg = 'HELLO WORLD! - PyThor for Web Programming'
 	
-	
-	print_wwwlog( <% I am  at  '''''''{}{}{}{} {{{{ }}}} the middle content \a\1\2\3\4\5\6\7\8\9\b\f\v\r\n\t\0\x0B
-	
-	
-I have denoted newlines within a raw string , sent to the web browser that also interprets as newlines
-And saving the file also is fine.
-
+	print_wwwlog( <% This string is at the middle content
 <br>
 <br>
-hello world  (but html characters are not interpreted this way)
-%>    )  # TWO SMALL CASES TO ESCAPE WITH RAW STRING LITERALS, a backslash before a single quote or double quote 
-          # (depending what are the outer quotes) and if the intent is to have a backslash at the end of a string, need two of them
+hello world  (but html tags are raw string literal strings within browser console log window)
+%>    )
 
 	return <%
 	 
 {**{var_msg}**}
 
-%>.format( var_msg = 'HELLO WORLD! - PyThor for Web Programming' )
+%>
 	 
 def end_content():
 	return 'footer'
-	
-# in the case not transferring data from php using multiple domains, simply revert to a previous version, commit 
+
+
 def domain_name(s):   
 	if(s == 'A'):
 		return 'us'
@@ -156,10 +140,6 @@ jQuery.getScript("first.js", function() {
 </head>
 <body><br>
 
-%> + pyQuickTags('hello world<br> what is around there').htmlentities() +
-
-<%
-
  {**{direct_local_var}**}  {**{local_var2}**}  {**{direct_global_var}**} {**{int_var}**} {**{float_var}**}
 <br><a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers -->  <pre style="display:inline">{**{fullsource}**}</pre> <br> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
 <a href="index.php?pythorinfo">pyThorInfo</a> {**{pyThorinfo}**}  <!-- Display pyThor environment by a url get (variable) --> <!-- perhaps put this on different page -->
@@ -174,9 +154,11 @@ jQuery.getScript("first.js", function() {
 
 </div>
 
+String Tests:
 NOTE: Just Testing OUTPUT HERE (note: the following escape characters need double backslash (octals not tested at this time)<br>
 \\\r\\n\\t\\0\\x0B  testing1, expected
 <br>
+
 \\a\\1\\2\\3\\4\\5\\6\\7\\8\\9\\b\\f\\v\\r\\n\\t\\0\\x0B   testing2, expected
 Result: Easy dealing with escape characters here. Though a python def, function like PHP's htmlentities still perhaps required (to be written,created)
 <br>
@@ -227,39 +209,32 @@ While still compatible with being able to use python format variables,
 
 </pre>
 
-%>.format (   #  %:)>    # UNCOMMENT POINT *A* (uncomment the FIRST comment hash tag for the remove unicode operation   # the arbitrary find string is exactly this 20 characters long, quick workaround to subtract a parenthesis keyword operator # hap face keyword to rid a frown ( removes a close parenthesis ) (an arbitrary keyword created to remove one text character)
-	# variables used
+%>.format (   # variables used
+	
 	top_content_var = top_content(),
 	mid_content_var = mid_content(),
 	end_content_var = end_content(),
 	php_test    = php(code),  # just testing, remove if coding anything serious
-	
-	domain      = domain_name(name), # or something like whether a mobile device,
-                                    # resolution information, etc. to select which css that fits	
 
-testing_output = '', #this_is_a_test(),    # test of include file using quick tags python syntax
+	domain = 'us' if (name == 'A') else  'com',                  # else (name == 'WIDE')  # or something like whether a mobile device, resolution information, etc. to select which css that fits
 
+	testing_output = '', #this_is_a_test(),    # test of include file using quick tags python syntax
 
-source_variable = source_code(),
+	source_variable = source_code(),
 
-example_htmlentities_string = <%  <p><hello world note p tags output><p>  %>.htmlentities(), # note, python quick tags stings have .htmlentities method
+	example_htmlentities_string = <%  <p><hello world note p tags output><p>  %>.htmlentities(), # note, python quick tags stings have .htmlentities method
 
-filename = os.path.basename(__file__).replace('_compiled.py', '.py'), # php filename witout extension
+	filename = os.path.basename(__file__).replace('_compiled.py', '.py'), # php filename witout extension
 
-fullsource = get_fullsource(comments = True, pretags=True) if (QUERY_STRING == 'fullsource') else '' , 
+	fullsource = get_fullsource(comments = True, pretags=True) if (QUERY_STRING == 'fullsource') else '' , 
 
-# __formatvariable_stop = (  '*--END OF FULL SOURCE--*'.replace(' ', '_' ) ) if (QUERY_STRING == 'fullsource') else '',  #   or perhaps to name it   __sysexit()  to truncate at the substring (note use of __ variables NOT recommended)
+	 __formatvariable_range = ('*--START OF FULL SOURCE--*'.replace(' ', '_' ) , '*--END OF FULL SOURCE--*'.replace(' ', '_' )) if (QUERY_STRING == 'fullsource') else ('',''),
 
- __formatvariable_range = ('*--START OF FULL SOURCE--*'.replace(' ', '_' ) , '*--END OF FULL SOURCE--*'.replace(' ', '_' )) if (QUERY_STRING == 'fullsource') else ('',''),
+	fullsourcelink = './index.php?fullsource',
 
-fullsourcelink = './index.php?fullsource',
+	pyThorinfo = display_pythorinfo()  if (QUERY_STRING == 'pythorinfo') else '',   #remove this line to remove the url feature  # for demonstration purpose only, please remove the next line for production code (it is however a feature that is available at any time should you code it)
 
-
-# for demonstration purpose only, please remove the next line for production code (it is however a feature that is available at any time should you code it)
-pyThorinfo = display_pythorinfo()  if (QUERY_STRING == 'pythorinfo') else '',   #remove this line to remove the url feature
-
-features = display_features() if (QUERY_STRING == 'features') else ''
-
+	features = display_features() if (QUERY_STRING == 'features') else ''
 )
 
 	# testing writing print statement to the web browser 
@@ -280,33 +255,18 @@ logConsole('An array of fruits', $fruits, true);
 logConsole('$user object', $user, true);
 %>
 
- 
 	# Written to print to the console log of a web browser
-
-	# Including an external python file that uses quick tags, (both open and close tags), and a format string variable syntax of {**{variable_name}**}
-	
 	s = (code_init + "\n" + console_log_function()  )
 	
-	# Escaping quotes seem to be the only small hassle from converting php source code to php source code within a python triple quoted string 
-	# (due to the slightly obtuse (yet it works) situation of... running PHP then system calling python and within it, running PHP within a python triple quoted string)
-	# therefore, NOTE: the extra backslash compared with the php version
-	# this will convert it to the exact php, but I've no need of it at this time, though note the following variable name in the comments (the immediate next line)
-	# string_to_write__NOT_DISPLAY_for_exact_PHP_equivalent_source_code = s.replace("#\\'#", "#'#").replace('#\\"\\"#', '#""#').replace("#\\'\\'#", "#''#")   # works, tested
-	# The previous statement string (in the comments) can be used to write if desired to get the exact PHP equivalent that is different than the string used to output to the web page 
-	# (due to an extra backslash required by python for quotes)
-
-	
-	# For convenience I've included it in the following write statement anyway (to get the exact equivalent to the PHP source code string)
+	# (to get the exact equivalent to the PHP source code string)
 	# The next line is optional to the OUTPUT to Web (i.e., it will not affect the display OUTPUT to web 
-	# (only for the previously stated purpose. So it's just to inspect and review the string by writing it to a file)
+	# it's just to inspect and review the string by writing it to a file)
 	s = s.replace("#\\'#", "#'#").replace('#\\"\\"#', '#""#').replace("#\\'\\'#", "#''#") # comment this line out to view the exact string that gets OUTPUT to the web
-	
-	#to_write('testit.txt', s ) # uses to determine problematic characters only, can be removed, and to verify the contents of a php string by outputing to a file
 	
 	# TO OUTPUT to web
 	print php(  s   )
 
-	
+
 
 #   notes:
 #   https://sarfraznawaz.wordpress.com/2012/01/05/outputting-php-to-browser-console/

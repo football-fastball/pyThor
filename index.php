@@ -137,7 +137,7 @@ if (  to_compile($source, $compiled)  ||  $bool_recompile_feature_edit ) {  // N
 	echo passthru(	'python simple_preprocessor.py -M "'.$source.'" "'.$compiled.'" "'.$str_bool_uni_value.'" 2>&1' );
 }
 else {
-	echo '( NOT compiling!!!)';
+	;//echo '( NOT compiling!!!)';
 }
 
 
