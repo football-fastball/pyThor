@@ -1185,8 +1185,6 @@ logConsole('$user object', $user, true);
 	# It's just to inspect and review the string by writing it to a file)
 	s = s.replace("#\\'#", "#'#").replace('#\\"\\"#', '#""#').replace("#\\'\\'#", "#''#") # comment this line out to view the exact string that gets OUTPUT to the web
 	
-	#to_write('testit.txt', s ) # uses to determine problematic characters only, can be removed, and to verify the contents of a php string by outputing to a file
-	
 	# TO OUTPUT to web
 	print php(  s   )
 	
