@@ -945,13 +945,13 @@ import sys
 
 #  List Of PyThor features
 #  -----------------------
-#       From the .php file     *.php?fullsource       to display the full source code of a webpage similar to the view source as feature of web browsers 
+#       From the .php file     *.php?pagesource       to display the actual page source code of the webpage (without the source code to the core pyThor features)
+#                              *.php?fullsource       to display the full source code of a webpage similar to the view source as feature of web browsers 
 #                              *.php?pythorinfo       to display the environment variables of the web server, e.g., pySERVER, pyGET, pyPOST, and pyFILES
 #                              *.php?features         to access the feature list
 #                                   
 #
 #       Note that each of these url get parameters are easily configured that can be removed as shown in the example source code page auto created initially (note the .format method of the main function output )
-
 
 
 # INCLUDES TO BE PLACED HERE
