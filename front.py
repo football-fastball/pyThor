@@ -141,8 +141,17 @@ jQuery.getScript("first.js", function() {
 <body><br>
 
  {**{direct_local_var}**}  {**{local_var2}**}  {**{direct_global_var}**} {**{int_var}**} {**{float_var}**}
-<br><a href="{**{filename}**}">click to view pyThor page source</a><!-- similar to view source as feature of web browsers -->  <pre style="display:inline">{**{fullsource}**}</pre> <br> <a href="{**{fullsourcelink}**}">view full page source</a> <br>
-<a href="index.php?pythorinfo">pyThorInfo</a> {**{pyThorinfo}**}  <!-- Display pyThor environment by a url get (variable) --> <!-- perhaps put this on different page -->
+<br>
+<a href="{**{pagesourcelink}**}">click to view pyThor page source</a> <br>  
+<pre style="display:inline">{**{pagesource}**}</pre>
+<!-- similar to view source as feature of web browsers -->  
+
+<a href="{**{fullsourcelink}**}">view full page source</a> <br>
+<pre style="display:inline">{**{fullsource}**}</pre>
+
+<a href="{**{pythorinfolink}**}">pyThorInfo</a> {**{pyThorinfo}**}  
+<!-- Display pyThor environment by a url get (variable) -->
+
 <br>{**{testing_output}**}<br>
 <div id="container">
 
@@ -224,15 +233,19 @@ While still compatible with being able to use python format variables,
 
 	example_htmlentities_string = <%  <p><hello world note p tags output><p>  %>.htmlentities(), # note, python quick tags stings have .htmlentities method
 
-	filename = os.path.basename(__file__).replace('_compiled.py', '.py'), # php filename witout extension
+	pagesourcelink = 'index.php?pagesource',
 
-	fullsource = get_fullsource(comments = True, pretags=True) if (QUERY_STRING == 'fullsource') else '' , 
+	pagesource = source_code_from_file( r'front.py' ) if (QUERY_STRING == 'pagesource') else '' , 								 			 
+
+	fullsourcelink = './index.php?fullsource',
+	
+	fullsource = get_fullsource(pretags=True) if (QUERY_STRING == 'fullsource') else '' , 
 
 	 __formatvariable_range = ('*--START OF FULL SOURCE--*'.replace(' ', '_' ) , '*--END OF FULL SOURCE--*'.replace(' ', '_' )) if (QUERY_STRING == 'fullsource') else ('',''),
 
-	fullsourcelink = './index.php?fullsource',
+	pythorinfolink = './index.php?pythorinfo',
 
-	pyThorinfo = display_pythorinfo()  if (QUERY_STRING == 'pythorinfo') else '',   #remove this line to remove the url feature  # for demonstration purpose only, please remove the next line for production code (it is however a feature that is available at any time should you code it)
+	pyThorinfo = display_pythorinfo() if (QUERY_STRING == 'pythorinfo') else '',   #remove this line to remove the url feature  # for demonstration purpose only, please remove the next line for production code (it is however a feature that is available at any time should you code it)
 
 	features = display_features() if (QUERY_STRING == 'features') else ''
 )
