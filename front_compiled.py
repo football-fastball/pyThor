@@ -1180,16 +1180,18 @@ logConsole('$user object', $user, true);
 	# Written to print to the console log of a web browser
 	s = (code_init + "\n" + console_log_function()  )
 	
-	# (to get the exact equivalent to the PHP source code string)
+	# For convenience I've included it in the following write statement anyway (to get the exact equivalent to the PHP source code string)
 	# The next line is optional to the OUTPUT to Web (i.e., it will not affect the display OUTPUT to web 
-	# it's just to inspect and review the string by writing it to a file)
+	# It's just to inspect and review the string by writing it to a file)
 	s = s.replace("#\\'#", "#'#").replace('#\\"\\"#', '#""#').replace("#\\'\\'#", "#''#") # comment this line out to view the exact string that gets OUTPUT to the web
+	
+	#to_write('testit.txt', s ) # uses to determine problematic characters only, can be removed, and to verify the contents of a php string by outputing to a file
 	
 	# TO OUTPUT to web
 	print php(  s   )
-
-
-
+	
+	
+	
 #   notes:
 #   https://sarfraznawaz.wordpress.com/2012/01/05/outputting-php-to-browser-console/
 #   http://stackoverflow.com/questions/843277/how-do-i-check-if-a-variable-exists-in-python same as
