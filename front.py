@@ -34,7 +34,7 @@ import sys
 
 # INCLUDES TO BE PLACED HERE
 file_to_include = 'include.py'
-execfile(include_quick_tags_file(file_to_include)) # including this way due to execfile does not include file within a def,function
+execfile(include_quick_tags_file(file_to_include)) # including this way due to execfile does not include file from within a def,function
 
 
 def source_code():   # note, this is just source code print to display, not the entire page of the function output prints to the web browser, screen

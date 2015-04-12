@@ -377,13 +377,12 @@ def source_code_from_file(file):
 	with open(file, 'r') as fp:   # or .cpp .php  etc.
 		source = fp.read()
 		source = source.replace('"""', '&quot;&quot;&quot;')            # note: added 02-20-2015
-		
-	return pyQuickTags(r"""	
-	
-{**{source_variable}**}
 
-""").initsupers(locals(),globals()).format( source_variable = source ).htmlentities()   # when htmlentities not needed, then either remove the .htmlentities method, different function name with different code, (perhaps an override local function (w/same name) in website source, (though this override technique could cause confusion) ), or a htmlentities with a boolean arg,parameter version, etc.
+	return pyQuickTags(r"""
 
+{**{source}**}
+
+""").initsupers(locals(),globals()).htmlentities()
 
 def exit_program(var):
 	print 'early exit, ensure verified, variable name different, at the variable: ' + var + '<br>'
@@ -956,7 +955,7 @@ import sys
 
 # INCLUDES TO BE PLACED HERE
 file_to_include = 'include.py'
-execfile(include_quick_tags_file(file_to_include)) # including this way due to execfile does not include file within a def,function
+execfile(include_quick_tags_file(file_to_include)) # including this way due to execfile does not include file from within a def,function
 
 
 def source_code():   # note, this is just source code print to display, not the entire page of the function output prints to the web browser, screen
@@ -1167,7 +1166,7 @@ While still compatible with being able to use python format variables,
 
 	pythorinfolink = './index.php?pythorinfo',
 
-	pyThorinfo = display_pythorinfo()  if (QUERY_STRING == 'pythorinfo') else '',   #remove this line to remove the url feature  # for demonstration purpose only, please remove the next line for production code (it is however a feature that is available at any time should you code it)
+	pyThorinfo = display_pythorinfo() if (QUERY_STRING == 'pythorinfo') else '',   #remove this line to remove the url feature  # for demonstration purpose only, please remove the next line for production code (it is however a feature that is available at any time should you code it)
 
 	features = display_features() if (QUERY_STRING == 'features') else ''
 )

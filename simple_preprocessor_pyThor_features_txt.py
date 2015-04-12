@@ -380,13 +380,12 @@ def source_code_from_file(file):
 	with open(file, 'r') as fp:   # or .cpp .php  etc.
 		source = fp.read()
 		source = source.replace('"""', '&quot;&quot;&quot;')            # note: added 02-20-2015
-		
-	return <%	
-	
-{**{source_variable}**}
 
-%>.format( source_variable = source ).htmlentities()   # when htmlentities not needed, then either remove the .htmlentities method, different function name with different code, (perhaps an override local function (w/same name) in website source, (though this override technique could cause confusion) ), or a htmlentities with a boolean arg,parameter version, etc.
+	return <%
 
+{**{source}**}
+
+%>.htmlentities()
 
 def exit_program(var):
 	print 'early exit, ensure verified, variable name different, at the variable: ' + var + '<br>'
