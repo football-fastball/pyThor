@@ -80,10 +80,8 @@ def findtags(open, close, s):
 def make_tuples(s):		# for direct format variables using python quick tags {**{  }**}
 
 	fv = []
-
 	start = 0
 	pos   = 0  # or idx
-
 	while (1):
 
 		pos = s.find( '{**{', pos )
@@ -237,19 +235,18 @@ def console_log_function():
           $type = ($data || gettype($data)) ? 'Type: ' . gettype($data) : '';
  
           if ($jsEval && (is_array($data) || is_object($data))) {
-               $data = 'eval(' . preg_replace( '#[\\a\\1\\2\\3\\4\\5\\6\\7\\8\\9\\b\\f\\v\\r\\n\\t\\0\\x0B]+#', '', json_encode($data)) . ')';
                $isevaled = true;
           }
-          else {
-               $data = json_encode($data);
-          }
-          # sanitalize
-		  $data = $data ? $data : '';
-          $search_array = array("#\\'#", '#\\"\\"#', "#\\'\\'#", "#\\n#", "#\\r\\n#");
-          $replace_array = array('"', '', '', '\\\\n', '\\\\n');
-          $data = preg_replace($search_array,  $replace_array, $data);
+          $data = json_encode($data);
+
+          # Sanitizes
+          $data = $data ? $data : '';
+          $search_array    = array( '\"\"', "''", "\\r\\n" );
+          $replacing_array = array( ''    , ''  , "\\n" );
+          $data = str_replace($search_array, $replacing_array, $data);
           $data = ltrim(rtrim($data, '"'), '"');
           $data = $isevaled ? $data : ($data[0] === "'") ? $data : "'" . $data . "'";
+
 $js = <<<JSCODE
 
 <script>
@@ -277,7 +274,6 @@ $js = <<<JSCODE
      console.log('------------------------------------------');
      console.log('$type');
      console.log(hex2asc($data));
-
 </script>
 
 JSCODE;
@@ -302,11 +298,6 @@ def exists(arg1, object=''):   # an interesting function   2 argument defines th
 		if arg1 in object:
 			#    when_true                   when_false
 			return True if arg1 in object else False
-			#
-			# if arg1 in object:
-			#	return True
-			# else:
-			#	return False
 	
 def file_exists(path):
 	return os.path.isfile(path)
@@ -335,8 +326,6 @@ def compile_include_quick_tags(file):
 	
 	print( 'INCLUDING THIS FILE(' + compiled + ')' )
 	return compiled # run pre_processor on it, with file being the source and  it as the dest
-		
-	# any includes done here to evaluate one file format variable, Q. can I include in a def,function
 	
 	
 def include_quick_tags_file(source):
@@ -352,7 +341,7 @@ def print_wwwlog(s):    # prints to brower's console log
 	
 	s = s.encode('hex')              
 	s = '<hex>'+s+'</hex>'           
-		
+
 	code_init = pyQuickTags(r"""
 $name1 = '{**{s}**}';
 logConsole('$name1 var', $name1, true);
@@ -391,10 +380,7 @@ def exit_program(var):
 def read_superglobalvariable_file(file):
 	
 	with open(file, 'r') as fp:
-		arr = fp.read().splitlines()
-		#arr[1] = '' if (arr[1]=='[]') else arr[1] #sanitizes, otherwise additional or to a function...
-		#arr[2] = '' if (arr[2]=='[]') else arr[2] #...
-		#arr[3] = '' if (arr[3]=='[]') else arr[3] #...		
+		arr = fp.read().splitlines()	
 	return ( arr[0], arr[1], arr[2], arr[3] )
 
 	
@@ -751,11 +737,6 @@ def create_superglobals(args):
 
 
 def display_pythorinfo():
-
-	#global pySERVER      # only when editing...
-	#global pyGET		  #...
-	#global pyGET		  #...
-	#global pyFILES		  #...
 	
 	out=''
  	
@@ -767,7 +748,6 @@ def display_pythorinfo():
 
 	out += pyQuickTags(r""" 
 		<h1>Apache Envionment Variables </h1>
-	
 		<table border="1">
 	""").initsupers(locals(),globals())	
 
@@ -1176,8 +1156,8 @@ While still compatible with being able to use python format variables,
 	code_init = pyQuickTags(r"""
 $name = 'Stan Switaj';
  
-$fruits = array("banana", "apple", "strawberry", "pineaple");
- 
+$fruits = array("oranges", "apples", "strawberry", "pineapple", "kiwi");
+
 $user = new stdClass;
 $user->name = 'Hello 123.00 \\a\\1\\2\\3\\4\\5\\6\\7\\8\\9\\b\\f\\v\\r\\n\\t\\0\\x0B ';
 $user->desig = "CEO";
@@ -1191,23 +1171,10 @@ logConsole('$user object', $user, true);
 
 	# Written to print to the console log of a web browser
 	s = (code_init + "\n" + console_log_function()  )
-	
-	# For convenience I've included it in the following write statement anyway (to get the exact equivalent to the PHP source code string)
-	# The next line is optional to the OUTPUT to Web (i.e., it will not affect the display OUTPUT to web 
-	# It's just to inspect and review the string by writing it to a file)
-	s = s.replace("#\\'#", "#'#").replace('#\\"\\"#', '#""#').replace("#\\'\\'#", "#''#") # comment this line out to view the exact string that gets OUTPUT to the web
-	
+
 	# TO OUTPUT to web
 	print php(  s   )
 	
-	
-	
-#   notes:
-#   https://sarfraznawaz.wordpress.com/2012/01/05/outputting-php-to-browser-console/
-#   http://stackoverflow.com/questions/843277/how-do-i-check-if-a-variable-exists-in-python same as
-#   to test variable existence http://stackoverflow.com/a/843293  otherwise .ini for initial options
-#   nice unicode description: https://greeennotebook.wordpress.com/2014/05/24/character-sets-and-unicode-in-python/
-
 
 
 if __name__ == "__main__":  # in the case not transferring data from php, then simply revert to a previous version, commit

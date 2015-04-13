@@ -255,8 +255,8 @@ While still compatible with being able to use python format variables,
 	code_init = <%
 $name = 'Stan Switaj';
  
-$fruits = array("banana", "apple", "strawberry", "pineaple");
- 
+$fruits = array("oranges", "apples", "strawberry", "pineapple", "kiwi");
+
 $user = new stdClass;
 $user->name = 'Hello 123.00 \\a\\1\\2\\3\\4\\5\\6\\7\\8\\9\\b\\f\\v\\r\\n\\t\\0\\x0B ';
 $user->desig = "CEO";
@@ -270,19 +270,7 @@ logConsole('$user object', $user, true);
 
 	# Written to print to the console log of a web browser
 	s = (code_init + "\n" + console_log_function()  )
-	
-	# For convenience I've included it in the following write statement anyway (to get the exact equivalent to the PHP source code string)
-	# The next line is optional to the OUTPUT to Web (i.e., it will not affect the display OUTPUT to web 
-	# It's just to inspect and review the string by writing it to a file)
-	s = s.replace("#\\'#", "#'#").replace('#\\"\\"#', '#""#').replace("#\\'\\'#", "#''#") # comment this line out to view the exact string that gets OUTPUT to the web
-	
+
 	# TO OUTPUT to web
 	print php(  s   )
 	
-	
-	
-#   notes:
-#   https://sarfraznawaz.wordpress.com/2012/01/05/outputting-php-to-browser-console/
-#   http://stackoverflow.com/questions/843277/how-do-i-check-if-a-variable-exists-in-python same as
-#   to test variable existence http://stackoverflow.com/a/843293  otherwise .ini for initial options
-#   nice unicode description: https://greeennotebook.wordpress.com/2014/05/24/character-sets-and-unicode-in-python/

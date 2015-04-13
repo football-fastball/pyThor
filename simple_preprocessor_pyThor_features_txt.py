@@ -83,10 +83,8 @@ def findtags(open, close, s):
 def make_tuples(s):		# for direct format variables using python quick tags {**{  }**}
 
 	fv = []
-
 	start = 0
 	pos   = 0  # or idx
-
 	while (1):
 
 		pos = s.find( '{**{', pos )
@@ -240,19 +238,18 @@ def console_log_function():
           $type = ($data || gettype($data)) ? 'Type: ' . gettype($data) : '';
  
           if ($jsEval && (is_array($data) || is_object($data))) {
-               $data = 'eval(' . preg_replace( '#[\\a\\1\\2\\3\\4\\5\\6\\7\\8\\9\\b\\f\\v\\r\\n\\t\\0\\x0B]+#', '', json_encode($data)) . ')';
                $isevaled = true;
           }
-          else {
-               $data = json_encode($data);
-          }
-          # sanitalize
-		  $data = $data ? $data : '';
-          $search_array = array("#\\'#", '#\\"\\"#', "#\\'\\'#", "#\\n#", "#\\r\\n#");
-          $replace_array = array('"', '', '', '\\\\n', '\\\\n');
-          $data = preg_replace($search_array,  $replace_array, $data);
+          $data = json_encode($data);
+
+          # Sanitizes
+          $data = $data ? $data : '';
+          $search_array    = array( '\"\"', "''", "\\r\\n" );
+          $replacing_array = array( ''    , ''  , "\\n" );
+          $data = str_replace($search_array, $replacing_array, $data);
           $data = ltrim(rtrim($data, '"'), '"');
           $data = $isevaled ? $data : ($data[0] === "'") ? $data : "'" . $data . "'";
+
 $js = <<<JSCODE
 
 <script>
@@ -280,7 +277,6 @@ $js = <<<JSCODE
      console.log('------------------------------------------');
      console.log('$type');
      console.log(hex2asc($data));
-
 </script>
 
 JSCODE;
@@ -305,11 +301,6 @@ def exists(arg1, object=''):   # an interesting function   2 argument defines th
 		if arg1 in object:
 			#    when_true                   when_false
 			return True if arg1 in object else False
-			#
-			# if arg1 in object:
-			#	return True
-			# else:
-			#	return False
 	
 def file_exists(path):
 	return os.path.isfile(path)
@@ -338,8 +329,6 @@ def compile_include_quick_tags(file):
 	
 	print( 'INCLUDING THIS FILE(' + compiled + ')' )
 	return compiled # run pre_processor on it, with file being the source and  it as the dest
-		
-	# any includes done here to evaluate one file format variable, Q. can I include in a def,function
 	
 	
 def include_quick_tags_file(source):
@@ -355,7 +344,7 @@ def print_wwwlog(s):    # prints to brower's console log
 	
 	s = s.encode('hex')              
 	s = '<hex>'+s+'</hex>'           
-		
+
 	code_init = <%
 $name1 = '{**{s}**}';
 logConsole('$name1 var', $name1, true);
@@ -394,10 +383,7 @@ def exit_program(var):
 def read_superglobalvariable_file(file):
 	
 	with open(file, 'r') as fp:
-		arr = fp.read().splitlines()
-		#arr[1] = '' if (arr[1]=='[]') else arr[1] #sanitizes, otherwise additional or to a function...
-		#arr[2] = '' if (arr[2]=='[]') else arr[2] #...
-		#arr[3] = '' if (arr[3]=='[]') else arr[3] #...		
+		arr = fp.read().splitlines()	
 	return ( arr[0], arr[1], arr[2], arr[3] )
 
 	
@@ -754,11 +740,6 @@ def create_superglobals(args):
 
 
 def display_pythorinfo():
-
-	#global pySERVER      # only when editing...
-	#global pyGET		  #...
-	#global pyGET		  #...
-	#global pyFILES		  #...
 	
 	out=''
  	
@@ -770,7 +751,6 @@ def display_pythorinfo():
 
 	out += <% 
 		<h1>Apache Envionment Variables </h1>
-	
 		<table border="1">
 	%>	
 
@@ -959,17 +939,22 @@ Features List of PyThor
 2. There is the feature to use of   format variables on the python quick tag <% %>
 e.g.,   <%  {**{variable_for_you}**}}  %>.format( variable_for_you = 'hello world' )
 
-3. There is the feature to use of   .htmlentities method on the python quick tags <% %>
+3. There is now direct variable interpolation for strings from local variables within a function and global variables.   
+   Therefore strings can access variables without the .format method with the pyThor distinct variable accessor syntax of 
+e.g.,  <% python quick tag string has {**{direct_access_variable_local_or_global}**} %>
+   
+4. There is the feature to use of   .htmlentities method on the python quick tags <% %>
 e.g.,   <%  this string will be converted to its htmlentities form %>.htmlentities()
 
-4. There is the feature to access superglobal variables that exist as they do in PHP
+5. There is the feature to access superglobal variables that exist as they do in PHP
    These variables have the same name as their PHP equivalent.
-   Note that the keyword global must be used to access the superglobal variable within any function or method
-   that you intend to use the variable.
+   These superglobal variables are also called convenience variables and are accessible within any function or method
+   that you intend to use the variable.  The dict objects of pySERVER, pyGET, pyPOST, and pyFILES can also be accessed.
 
-5. There is the feature to print text to the web browser console    # prints to brower's console log
+6. There is the feature to print text to the web browser console    # prints to brower's console log
 
-   print_wwwlog(any_text_to_print_to_console_log_string_or_variable_etc)
+   print_wwwlog(any_string_text_to_print_to_console_log_string_or_variable_etc)
+
 
 #_FEATURES_LIST_CLOSE_TAG_#
 # DO NOT EDIT THE TEXT ON THE PREVIOUS LINE, this is used to automatically generate _compiled.py source code #
