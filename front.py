@@ -1,22 +1,26 @@
 import os
 import sys
 
-# pyThor (pyTron) page
+# pyTron (pyThor) page
 # Internal are these functions that you can use, the source code to view is in the file  simple_preprocessor_pyThor_features_txt.py
 #                                                   the compiled version is in the file  front_compiled.py
 #                                                   for review
 
-#  1)     python quick tags  <%  %>
-#  2)                              .htmlentities()   on the python quick tags          (to display source code) (note to wrap your format variable in pre tags for newlines work ok)
+#  1)     python quick tags  <%         %>
+#  2)     .htmlentities()   on the python quick tags          (to display source code) 
+#         (note to wrap your format variable in pre tags for newlines work ok)
 
-#  3)     source_code_from_file(file)                # file is the filename of the source code you would like to display
+#  3)     direct local or global variables with pyThor variable access syntax
+#         <% python quick tag string can {**{direct_access_variable_local_or_global}**} %>
 
-#  4)     use of superglobal variables from PHP in the form of pySERVER,pyGET,pyPOST,pyFILES as accessed in PHP
+#  4)     source_code_from_file(file)                # file is the filename of the source code you would like to display
+
+#  5)     use of superglobal variables from PHP in the form of pySERVER,pyGET,pyPOST,pyFILES as accessed in PHP
 #         Though recommended for convenience is to use the name of the variable that is global 
 #         e.g.,  Recommended use  DOCUMENT_ROOT  this is a global variable, instead of pySERVER['DOCUMENT_ROOT'], and so on (to access other PHP superglobal variables)
 #         Please note that the keyword global must be used to access the superglobal variable within any function or method that you intend to use the variable.
 
-#  5)     print_wwwlog(any_text_to_print_to_console_log_string_or_variable_etc)    # prints to brower's console log
+#  6)     print_wwwlog(any_string_text_to_print_to_console_log_string_or_variable_etc)    # prints to brower's console log
 
 # Note:  The variable   ensure  is set to True inititally, this can be set to False for a slight speed increase in the  simple_preprocessor_pyThor_features_txt.py  file ) ( also note: python allows to overwrite functions by simply making a function by the same name in this file as is defined in the simple_preprocessor_pyThor_features_txt.py file, though not recommended)
 
