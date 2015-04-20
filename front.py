@@ -221,7 +221,8 @@ While still compatible with being able to use python format variables,
 </pre>
 
 </pre>
-
+unicode display: Chinese , Japanese - testing3, expected<br>
+入口   ,  ようこそ   <br>
 %>.format (   # variables used
 	
 	top_content_var = top_content(),
